@@ -1,0 +1,136 @@
+.burger-button {
+  position: relative;
+  justify-self: end;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.burger-button:hover {
+  background: rgba(166, 132, 255, 0.1);
+}
+
+.burger-button_active span {
+  animation: burgerMainLineActive 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes burgerMainLineActive {
+  0% {
+    background: white;
+  }
+  50% {
+    background: transparent;
+  }
+  100% {
+    background: transparent;
+  }
+}
+
+.burger-button_inactive span {
+  animation: burgerMainLineInactive 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes burgerMainLineInactive {
+  0% {
+    background: transparent;
+  }
+  50% {
+    background: white;
+  }
+  100% {
+    background: white;
+  }
+}
+
+.burger-button span {
+  width: 24px;
+  height: 2px;
+  background: white;
+}
+
+.burger-button span::before,
+.burger-button span::after {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 2px;
+  background: white;
+  border-radius: 1px;
+}
+
+.burger-button span::before {
+  transform: translateY(-10px);
+}
+
+.burger-button_active span::before {
+  animation: burgerButtonTopActive 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes burgerButtonTopActive {
+  0% {
+    transform: translateY(-10px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(-45deg);
+  }
+}
+
+.burger-button_inactive span::before {
+  animation: burgerButtonTopLineInactive 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes burgerButtonTopLineInactive {
+  0% {
+    transform: translateY(0px) rotate(-45deg);
+  }
+  50% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  100% {
+    transform: translateY(-10px) rotate(0deg);
+  }
+}
+
+.burger-button span::after {
+  transform: translateY(10px);
+}
+
+.burger-button_active span::after {
+  animation: burgerButtonBottomActive 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes burgerButtonBottomActive {
+  0% {
+    transform: translateY(10px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  100% {
+    transform: translateY(0px) rotate(45deg);
+  }
+}
+
+.burger-button_inactive span::after {
+  animation: burgerButtonBottomLineInactive 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+@keyframes burgerButtonBottomLineInactive {
+  0% {
+    transform: translateY(0px) rotate(45deg);
+  }
+  50% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  100% {
+    transform: translateY(10px) rotate(0deg);
+  }
+}

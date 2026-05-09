@@ -1,0 +1,1 @@
+export { loadTranslations } from "./locales";

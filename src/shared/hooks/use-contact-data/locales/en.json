@@ -1,0 +1,25 @@
+{
+  "administration": {
+    "director": "Director",
+    "directorName": "Martyniuk Petro Mykolaiovych",
+    "deputyDirectorForScientificWork": "Deputy Director for Scientific Work",
+    "deputyDirectorForScientificWorkName": "Pryshchepa Oksana Volodymyrivna",
+    "deputyDirectorForEducationalAndMethodologicalWork": "Deputy Director for Educational and Methodological Work",
+    "deputyDirectorForEducationalAndMethodologicalWorkName": "Babych Tetiana Yuriyivna",
+    "deputyDirectorOfEducationalWork": "Deputy Director for Educational Work",
+    "deputyDirectorOfEducationalWorkName": "Herus Volodymyr Andriyovych"
+  },
+  "deanery": {
+    "dailyEducation": "Full-time Education",
+    "dailyEducationName": "Kovalchuk Svitlana Petrivna and Sachuk Halynna Mykhailivna",
+    "distanceEducation": "Part-time Education",
+    "distanceEducationName": "Karpan Nataliia Anatoliivna"
+  },
+  "location": {
+    "address": "Soborna Street, 11, Rivne, Rivne Region, 33000."
+  },
+  "audience": "Room",
+  "email": "E-mail",
+  "phone": "Phone",
+  "address": "Address"
+}

@@ -1,0 +1,50 @@
+{
+  "navigationMenu": {
+    "aboutUs": "Про нас",
+    "history": "Історія",
+    "strategy": "Стратегія",
+    "team": "Команда",
+    "gallery": "Галерея",
+    "forEntrant": "Вступникам",
+    "undergraduateStudies": "Додипломна освіта",
+    "bachelorDegree": "Бакалаврат",
+    "masterDegree": "Магістратура",
+    "postgraduateStudies": "Аспірантура",
+    "graduates": "Випускники",
+    "departments": "Кафедри",
+    "higherMathematics": "Вищої математики",
+    "computerTechnologiesAndEconomicCybernetics": "Комп'ютерних технологій та економічної кібернетики",
+    "computingEngineering": "Обчислювальної техніки",
+    "computerScienceAndAppliedMathematics": "Комп'ютерних наук та прикладної математики",
+    "events": "Події",
+    "eventsCalendar": "Календар подій",
+    "news": "Новини",
+    "announcements": "Оголошення",
+    "activities": "Заходи",
+    "science": "Наука",
+    "publications": "Публікації",
+    "research": "Дослідження",
+    "conferences": "Конференції",
+    "grants": "Гранти",
+    "partners": "Партнери",
+    "academicMobility": "Академічна мобільність",
+    "businessPartners": "Бізнес і підприємство",
+    "contacts&FAQ": "Контакти & FAQ",
+    "contacts": "Контакти",
+    "FAQ": "FAQ",
+    "question": "Задати питання"
+  },
+  "languageSwitcher": {
+    "en": "Aнгл",
+    "uk": "Укр"
+  },
+  "signIn": "Вхід",
+  "studentAccount": {
+    "schedule": "Розклад",
+    "journal": "Журнал успішності",
+    "logout": "Вийти"
+  },
+  "burgerMenu": {
+    "home": "На головну"
+  }
+}

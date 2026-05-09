@@ -16,12 +16,11 @@ export default function EntrantCtaSection({
         <Reveal
           mode="scale"
           amount={0.2}
-          className="relative flex flex-col items-start justify-between overflow-hidden rounded-3xl border px-6 py-10 sm:rounded-[32px] sm:px-10 sm:py-12 md:flex-row md:items-center md:gap-10 lg:px-[72px] lg:py-16 lg:gap-12"
+          className="relative flex flex-col items-start justify-between gap-6 overflow-hidden rounded-3xl border px-6 py-10 sm:rounded-[32px] sm:px-10 sm:py-12 sm:gap-8 md:flex-row md:items-center md:gap-10 lg:px-[72px] lg:py-16 lg:gap-12"
           style={{
             background:
               "linear-gradient(135deg, rgba(166,132,255,0.15) 0%, rgba(81,162,255,0.15) 100%)",
             borderColor: "rgba(166,132,255,0.2)",
-            gap: 32,
           }}
         >
           {/* Glow accents */}

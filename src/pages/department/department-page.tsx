@@ -1,20 +1,37 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
 import { DEPARTMENTS_DATA, type DepartmentData } from "@/shared/model/departments-data";
+import { ROUTES } from "@/shared/model/routes";
 import clsx from "clsx";
 import { PageTransition } from "@/widgets";
 import { Reveal, Stagger, StaggerItem } from "@/shared/ui";
 
 const avatar = (img: number) => `https://i.pravatar.cc/300?img=${img}`;
-const cover = (seed: number, w = 1400, h = 500) =>
-  `https://picsum.photos/seed/${seed}/${w}/${h}`;
+const DEPT_PHOTOS = [
+  "/images/students-stage.jpg",
+  "/images/students-lecture.jpg",
+  "/images/students-christmas.jpg",
+  "/images/noosphere-workshop.jpg",
+  "/images/students-event.jpg",
+  "/images/students-tennis.jpg",
+  "/images/vodnik-mascot.jpg",
+  "/images/halloween-event.jpg",
+  "/images/students-hall.jpg",
+  "/images/students-audience.jpg",
+  "/images/students-workshop.jpg",
+  "/images/students-sport.jpg",
+  "/images/students-guitar.jpg",
+];
+const cover = (seed: number) => DEPT_PHOTOS[seed % DEPT_PHOTOS.length];
 
 const sections = [
-  { id: "overview", label: "Про кафедру" },
-  { id: "programs", label: "Освітні програми" },
-  { id: "team", label: "Команда" },
-  { id: "history", label: "Історія" },
-  { id: "contacts", label: "Контакти" },
+  { id: "overview",   label: "Про кафедру" },
+  { id: "programs",   label: "Освітні програми" },
+  { id: "curriculum", label: "Навчальний план" },
+  { id: "team",       label: "Команда" },
+  { id: "history",    label: "Історія" },
+  { id: "contacts",   label: "Контакти" },
 ];
 
 function useSectionSpy() {
@@ -232,7 +249,7 @@ function OverviewSection({ dept }: { dept: DepartmentData }) {
         <div className="hidden lg:block">
           <div className="grad-border sticky top-28 overflow-hidden rounded-[20px]">
             <img
-              src={cover(dept.coverSeed, 680, 800)}
+              src={cover(dept.coverSeed)}
               alt={dept.name}
               className="h-[420px] w-full object-cover"
             />
@@ -257,12 +274,12 @@ function ProgramsSection({ dept }: { dept: DepartmentData }) {
         {dept.programs.map((prog, i) => (
           <StaggerItem key={prog.id} mode="up">
           <Link
-            to="/entrant/bachelor"
+            to={ROUTES.BACHELOR}
             className="spec-card grad-border group relative flex flex-col overflow-hidden rounded-[20px] bg-white/[0.03] backdrop-blur-xl"
           >
             <div className="relative h-[140px] overflow-hidden">
               <img
-                src={cover(dept.coverSeed + i + 1, 600, 300)}
+                src={cover(dept.coverSeed + i + 1)}
                 alt={prog.name}
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
@@ -298,6 +315,153 @@ function ProgramsSection({ dept }: { dept: DepartmentData }) {
           </StaggerItem>
         ))}
       </Stagger>
+    </section>
+  );
+}
+
+function CurriculumSection({ dept }: { dept: DepartmentData }) {
+  const [activeIdx, setActiveIdx] = useState(0);
+  const prog = dept.programs[activeIdx] ?? dept.programs[0];
+
+  const years = [1, 2, 3, 4]
+    .map((year) => ({
+      year,
+      subjects: prog.subjects.filter(
+        (s) => s.semester === year * 2 - 1 || s.semester === year * 2
+      ),
+    }))
+    .filter((y) => y.subjects.length > 0);
+
+  const mandatory = prog.subjects.filter((s) => s.type === "Нормативна");
+  const elective   = prog.subjects.filter((s) => s.type === "Вибіркова");
+
+  return (
+    <section id="curriculum" className="mt-fluid-xl">
+      <SectionTitle eyebrow="Навчальний план" title="Програма" highlight="навчання" />
+
+      {dept.programs.length > 1 && (
+        <div className="mb-8 flex flex-wrap gap-2">
+          {dept.programs.map((p, i) => (
+            <button
+              key={p.id}
+              onClick={() => setActiveIdx(i)}
+              className={clsx(
+                "rounded-full px-4 py-2 text-[12px] font-semibold transition-all duration-200",
+                i === activeIdx
+                  ? "bg-gradient-to-r from-violet-500 to-blue-500 text-white shadow-[0_4px_16px_rgba(166,132,255,0.3)]"
+                  : "grad-border bg-white/[0.04] text-white/60 backdrop-blur-md hover:text-white"
+              )}
+            >
+              <span className="mr-1.5 opacity-50">{p.code}</span>
+              {p.name}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeIdx}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.22, ease: "easeOut" }}
+        >
+          <div className="mb-8 flex flex-wrap gap-3 pb-px">
+            {[
+              { label: "Рівень",     value: prog.degree },
+              { label: "Тривалість", value: prog.duration },
+              { label: "Форма",      value: prog.form },
+              { label: "Кредити",    value: `${prog.totalCredits} ЄКТС` },
+            ].map((meta) => (
+              <div
+                key={meta.label}
+                className="grad-border flex flex-col rounded-[14px] bg-white/[0.03] px-4 py-3 backdrop-blur-xl"
+              >
+                <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/35">
+                  {meta.label}
+                </span>
+                <span className="mt-0.5 text-[13px] font-semibold text-white">{meta.value}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-col gap-4">
+            {years.map(({ year, subjects }, yi) => (
+              <motion.div
+                key={year}
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2, delay: yi * 0.06, ease: "easeOut" }}
+                className="grad-border rounded-[20px] bg-white/[0.02] backdrop-blur-xl"
+              >
+                <div className="flex items-center gap-3 border-b border-white/[0.06] px-5 py-4">
+                  <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-blue-500 text-[11px] font-extrabold text-white">
+                    {year}
+                  </span>
+                  <span className="font-display text-[13px] font-bold text-white">
+                    {year} курс — {year * 2 - 1} та {year * 2} семестри
+                  </span>
+                  <span className="ml-auto shrink-0 text-[11px] text-white/35">
+                    {subjects.reduce((sum, s) => sum + s.credits, 0)} кр.
+                  </span>
+                </div>
+                <div className="divide-y divide-white/[0.04]">
+                  {subjects.map((subject, i) => (
+                    <div key={i} className="flex items-center gap-4 px-5 py-3.5">
+                      <span className="min-w-0 flex-1 text-[13px] text-white/80">
+                        {subject.name}
+                      </span>
+                      <div className="flex shrink-0 items-center gap-2">
+                        <span className="text-[11px] font-semibold tabular-nums text-white/40">
+                          {subject.credits} кр.
+                        </span>
+                        <span
+                          className={clsx(
+                            "rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.06em]",
+                            subject.type === "Нормативна"
+                              ? "border border-violet-500/30 bg-violet-500/[0.12] text-violet-300"
+                              : "border border-white/10 bg-white/[0.04] text-white/40"
+                          )}
+                        >
+                          {subject.type === "Нормативна" ? "Норм." : "Вибір."}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-6 grid grid-cols-3 gap-3 pb-px">
+            <div className="grad-border rounded-[16px] bg-white/[0.03] p-4 text-center backdrop-blur-xl">
+              <p className="font-display text-[1.8rem] font-extrabold text-white">
+                {prog.subjects.length}
+              </p>
+              <p className="mt-0.5 text-[10px] uppercase tracking-[0.12em] text-white/40">
+                Дисциплін
+              </p>
+            </div>
+            <div className="grad-border rounded-[16px] bg-violet-500/[0.06] p-4 text-center backdrop-blur-xl">
+              <p className="font-display text-[1.8rem] font-extrabold text-violet-300">
+                {mandatory.reduce((sum, s) => sum + s.credits, 0)}
+              </p>
+              <p className="mt-0.5 text-[10px] uppercase tracking-[0.12em] text-violet-500/70">
+                Норм. кр.
+              </p>
+            </div>
+            <div className="grad-border rounded-[16px] bg-white/[0.03] p-4 text-center backdrop-blur-xl">
+              <p className="font-display text-[1.8rem] font-extrabold text-white/60">
+                {elective.reduce((sum, s) => sum + s.credits, 0)}
+              </p>
+              <p className="mt-0.5 text-[10px] uppercase tracking-[0.12em] text-white/30">
+                Вибірк. кр.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
     </section>
   );
 }
@@ -347,7 +511,7 @@ function HistorySection({ dept }: { dept: DepartmentData }) {
 
       <div className="grad-border relative mb-10 overflow-hidden rounded-[20px]">
         <img
-          src={cover(dept.coverSeed + 10, 1200, 400)}
+          src={cover(dept.coverSeed + 10)}
           alt=""
           className="h-[200px] w-full object-cover sm:h-[256px]"
         />
@@ -455,7 +619,7 @@ function DepartmentPage() {
       {/* Hero */}
       <div className="relative h-64 overflow-hidden bg-[#08090f] sm:h-80 md:h-96">
         <img
-          src={cover(dept.coverSeed, 1400, 500)}
+          src={cover(dept.coverSeed)}
           alt={dept.name}
           className="absolute inset-0 h-full w-full object-cover opacity-50"
         />
@@ -525,6 +689,7 @@ function DepartmentPage() {
             <main className="min-w-0 flex-1">
               <OverviewSection dept={dept} />
               <ProgramsSection dept={dept} />
+              <CurriculumSection dept={dept} />
               <TeamSection dept={dept} />
               <HistorySection dept={dept} />
               <ContactsSection dept={dept} />

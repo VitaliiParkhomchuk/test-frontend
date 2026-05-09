@@ -1,6 +1,14 @@
 @import url("./fonts.css");
 @import "tailwindcss";
 
+@custom-variant hover {
+  @media (hover: hover) {
+    &:hover {
+      @slot;
+    }
+  }
+}
+
 /* ══════════════════════════════════════════════════════════════════════════
    FLUID DESIGN SYSTEM
    vw(px, base=1920) = px / base * 100vw

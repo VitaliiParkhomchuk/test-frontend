@@ -141,7 +141,7 @@ function BachelorPage() {
         title="Чотири роки до"
         gradientWord="кар'єри в IT"
         description="8 спеціальностей у сферах розробки, кібербезпеки, AI та математики. Держзамовлення, сучасні лабораторії та викладачі-практики з реального IT-ринку."
-        imageSeed="entrant-bachelor"
+        imageSeed="/images/students-stage.jpg"
         stats={[
           { value: "4", label: "роки навчання" },
           { value: "8", label: "спеціальностей" },

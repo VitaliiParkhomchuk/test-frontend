@@ -61,14 +61,10 @@ type ScienceLabels = {
 };
 
 const PAGE_HERO_IMAGE: Record<SciencePageKind, string> = {
-  publications:
-    "https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=1600&q=80",
-  research:
-    "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1600&q=80",
-  conferences:
-    "https://images.unsplash.com/photo-1515169067865-5387ec356754?auto=format&fit=crop&w=1600&q=80",
-  grants:
-    "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1600&q=80",
+  publications: "/images/students-event.jpg",
+  research: "/images/noosphere-workshop.jpg",
+  conferences: "/images/students-stage.jpg",
+  grants: "/images/students-workshop.jpg",
 };
 
 const ACTIVITY_META: Record<

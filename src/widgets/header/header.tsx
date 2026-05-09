@@ -100,15 +100,18 @@ export function Header() {
 
   return (
     <header
-      className={clsx(
-        "fixed left-0 right-0 top-0 z-[100] w-full transition-all duration-[350ms]",
-        scrolled
-          ? "border-b border-violet-500/10 bg-[rgba(8,9,15,0.85)] backdrop-blur-[24px]"
-          : "border-b border-transparent bg-transparent"
-      )}
+      className="fixed left-0 right-0 top-0 z-[100] w-full"
       style={{ height: "var(--header-height)" }}
     >
-      <div className="mx-auto flex h-full max-w-[1280px] items-center gap-8 px-10">
+      <div
+        className={clsx(
+          "absolute inset-0 transition-all duration-[350ms]",
+          scrolled
+            ? "border-b border-violet-500/10 bg-[rgba(8,9,15,0.85)] backdrop-blur-[24px]"
+            : "border-b border-transparent bg-transparent"
+        )}
+      />
+      <div className="relative mx-auto flex h-full max-w-[1280px] items-center gap-8 px-4 sm:px-6 lg:px-10">
         <Link to="/" className="flex-shrink-0">
           <MicrocircuitLabelLogo />
         </Link>

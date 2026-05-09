@@ -76,8 +76,7 @@ export default function SocialSection({ className = "" }: { className?: string }
       <Reveal
         mode="fade"
         amount={0.3}
-        className="container-v2 flex items-center"
-        style={{ gap: 32 }}
+        className="container-v2 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6"
       >
         <span
           className="flex-shrink-0"
@@ -92,10 +91,10 @@ export default function SocialSection({ className = "" }: { className?: string }
           Соцмережі
         </span>
         <div
-          className="flex-1"
+          className="hidden sm:block flex-1"
           style={{ height: 1, background: "rgba(255,255,255,0.06)" }}
         />
-        <Stagger className="flex" style={{ gap: 8 }} stagger={0.07}>
+        <Stagger className="flex flex-wrap gap-2 sm:gap-2.5" stagger={0.07}>
           {SOCIALS.map((s) => (
             <StaggerItem key={s.icon} mode="up">
               <SocialLink icon={s.icon} label={s.label} href={s.href} />

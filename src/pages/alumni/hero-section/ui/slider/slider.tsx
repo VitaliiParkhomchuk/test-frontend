@@ -3,10 +3,20 @@ import clsx from "clsx";
 import styled, { css, keyframes } from "styled-components";
 import { RenderSlider } from "./render-slider";
 
-const FALLBACK_SLIDER_ITEMS = Array.from({ length: 12 }, (_, i) => ({
-  id: i,
-  image: `https://picsum.photos/seed/alumni-${i + 1}/480/336`,
-}));
+const FALLBACK_SLIDER_ITEMS = [
+  { id: 0, image: "/images/students-guitar.jpg" },
+  { id: 1, image: "/images/students-christmas.jpg" },
+  { id: 2, image: "/images/students-stage.jpg" },
+  { id: 3, image: "/images/students-event.jpg" },
+  { id: 4, image: "/images/students-tennis.jpg" },
+  { id: 5, image: "/images/noosphere-workshop.jpg" },
+  { id: 6, image: "/images/vodnik-mascot.jpg" },
+  { id: 7, image: "/images/halloween-event.jpg" },
+  { id: 8, image: "/images/students-hall.jpg" },
+  { id: 9, image: "/images/students-lecture.jpg" },
+  { id: 10, image: "/images/students-workshop.jpg" },
+  { id: 11, image: "/images/students-sport.jpg" },
+];
 
 interface SliderProps {
   className?: string;

@@ -68,16 +68,29 @@ export default function Accordion({
       >
         {data.list?.map((item, index) => (
           <li key={index}>
-            <Link
-              to={item.link}
-              className="block rounded-[10px] px-4 py-2.5 text-[14px] font-medium text-white/55 transition-all duration-200 hover:bg-white/[0.05] hover:text-white"
-              onClick={() => {
-                handleBurgerClick();
-                toggleAccordion();
-              }}
-            >
-              {item.title}
-            </Link>
+            {item.onClick ? (
+              <button
+                className="block w-full rounded-[10px] px-4 py-2.5 text-left text-[14px] font-medium text-white/55 transition-all duration-200 hover:bg-white/[0.05] hover:text-white"
+                onClick={() => {
+                  item.onClick!();
+                  handleBurgerClick();
+                  toggleAccordion();
+                }}
+              >
+                {item.title}
+              </button>
+            ) : (
+              <Link
+                to={item.link}
+                className="block rounded-[10px] px-4 py-2.5 text-[14px] font-medium text-white/55 transition-all duration-200 hover:bg-white/[0.05] hover:text-white"
+                onClick={() => {
+                  handleBurgerClick();
+                  toggleAccordion();
+                }}
+              >
+                {item.title}
+              </Link>
+            )}
           </li>
         ))}
       </ul>

@@ -109,7 +109,7 @@ export function EntrantHero({
 
           <Reveal mode="right" inView={false} className="grad-border relative hidden overflow-hidden rounded-[20px] lg:block">
             <img
-              src={`https://picsum.photos/seed/${imageSeed}/700/480`}
+              src={imageSeed}
               alt=""
               className="h-[420px] w-full object-cover"
             />

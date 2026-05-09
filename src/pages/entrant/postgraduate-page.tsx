@@ -142,7 +142,7 @@ function PostgraduatePage() {
         title="Шлях до"
         gradientWord="PhD"
         description="Чотирирічна програма наукової підготовки для тих, хто прагне стати дослідником, винахідником або науковим лідером у сфері IT та математики."
-        imageSeed="entrant-postgraduate"
+        imageSeed="/images/students-hall.jpg"
         stats={[
           { value: "4–5", label: "роки навчання" },
           { value: "4", label: "спеціальності" },

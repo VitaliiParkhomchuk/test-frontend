@@ -54,10 +54,8 @@ type PartnersLabels = {
 };
 
 const PAGE_HERO_IMAGE: Record<PartnersPageKind, string> = {
-  academic:
-    "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1600&q=80",
-  business:
-    "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=1600&q=80",
+  academic: "/images/students-audience.jpg",
+  business: "/images/noosphere-workshop.jpg",
 };
 
 const PROPOSITIONS_META: Record<

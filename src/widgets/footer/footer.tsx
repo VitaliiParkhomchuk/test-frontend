@@ -1,13 +1,14 @@
 import clsx from "clsx";
 import { Link } from "react-router-dom";
 import { ROUTES } from "@/shared/model/routes";
+import { DEPARTMENTS_DATA } from "@/shared/model/departments-data";
 
 const NAV_COLS: { heading: string; links: { label: string; to: string }[] }[] = [
   {
     heading: "Університет",
     links: [
       { label: "Про нас", to: ROUTES.HISTORY },
-      { label: "Кафедри", to: "/department/1" },
+      { label: "Кафедри", to: `/department/${DEPARTMENTS_DATA[0].id}` },
       { label: "Новини", to: ROUTES.EVENTS },
       { label: "Контакти", to: ROUTES.CONTACTS },
     ],

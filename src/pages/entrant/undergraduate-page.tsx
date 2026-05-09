@@ -96,7 +96,7 @@ function UndergraduatePage() {
         title="Фаховий молодший"
         gradientWord="бакалавр"
         description="Перший крок в IT — після 9 або 11 класу. Отримай диплом молодшого спеціаліста за 2–3 роки та продовж навчання на бакалавраті зі скороченим терміном."
-        imageSeed="entrant-undergraduate"
+        imageSeed="/images/students-lecture.jpg"
         stats={[
           { value: "2–3", label: "роки навчання" },
           { value: "3", label: "спеціальності" },

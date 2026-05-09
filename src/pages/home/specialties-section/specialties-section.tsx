@@ -271,35 +271,37 @@ export default function SpecialtiesSection({
         </Reveal>
       </div>
 
-      <Swiper
-        onSwiper={(s) => {
-          swiperRef.current = s;
-        }}
-        modules={[Autoplay]}
-        loop
-        autoplay={{
-          delay: 0,
-          disableOnInteraction: false,
-          pauseOnMouseEnter: false,
-          stopOnLastSlide: false,
-        }}
-        speed={slideTravelMs}
-        slidesPerView="auto"
-        spaceBetween={SPACE_BETWEEN_PX}
-        simulateTouch={false}
-        allowTouchMove
-        grabCursor={false}
-        className="specialties-swiper !overflow-visible !px-4 py-2 sm:!px-6 lg:!px-10 [&_.swiper-wrapper]:!items-stretch [&_.swiper-wrapper]:!ease-linear [&_.swiper-slide]:!h-auto"
-      >
-        {SPECIALTIES.map((s) => (
-          <SwiperSlide
-            key={s.code}
-            className="!w-[260px] sm:!w-[280px] lg:!w-[300px]"
-          >
-            <SpecCard spec={s} />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      <div className="overflow-hidden">
+        <Swiper
+          onSwiper={(s) => {
+            swiperRef.current = s;
+          }}
+          modules={[Autoplay]}
+          loop
+          autoplay={{
+            delay: 0,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: false,
+            stopOnLastSlide: false,
+          }}
+          speed={slideTravelMs}
+          slidesPerView="auto"
+          spaceBetween={SPACE_BETWEEN_PX}
+          simulateTouch={false}
+          allowTouchMove
+          grabCursor={false}
+          className="specialties-swiper !px-4 py-2 sm:!px-6 lg:!px-10 [&_.swiper-wrapper]:!items-stretch [&_.swiper-wrapper]:!ease-linear [&_.swiper-slide]:!h-auto"
+        >
+          {SPECIALTIES.map((s) => (
+            <SwiperSlide
+              key={s.code}
+              className="!w-[260px] sm:!w-[280px] lg:!w-[300px]"
+            >
+              <SpecCard spec={s} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
     </section>
   );
 }

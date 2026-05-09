@@ -9,7 +9,7 @@ type NewsItem = {
   date: string;
   tag: string;
   title: string;
-  seed: string;
+  image: string;
 };
 
 const NEWS: NewsItem[] = [
@@ -19,28 +19,28 @@ const NEWS: NewsItem[] = [
     tag: "Наука",
     title:
       "Студенти НУВГП перемогли на Всеукраїнській олімпіаді з програмування",
-    seed: "ai-lab",
+    image: "/images/students-lecture.jpg",
   },
   {
     id: 2,
     date: "21 квіт 2025",
     tag: "Партнерство",
     title: "Підписано угоду про співпрацю з провідними IT-компаніями",
-    seed: "partners",
+    image: "/images/noosphere-workshop.jpg",
   },
   {
     id: 3,
     date: "15 квіт 2025",
     tag: "Освіта",
     title: "Відкрито нову лабораторію штучного інтелекту",
-    seed: "ai-open",
+    image: "/images/students-workshop.jpg",
   },
   {
     id: 4,
     date: "10 квіт 2025",
     tag: "Рейтинг",
     title: "НУВГП увійшов до рейтингу найкращих університетів",
-    seed: "ranking",
+    image: "/images/students-stage.jpg",
   },
 ];
 
@@ -104,7 +104,7 @@ function NewsFeat({ item }: { item: NewsItem }) {
       <div
         className="aspect-[16/9] w-full bg-cover bg-center sm:aspect-auto sm:h-[260px]"
         style={{
-          backgroundImage: `url(https://picsum.photos/seed/${item.seed}/1200/600)`,
+          backgroundImage: `url(${item.image})`,
         }}
       />
       <div className="px-5 py-6 sm:p-7">
@@ -167,7 +167,7 @@ function NewsRow({ item }: { item: NewsItem }) {
           width: 72,
           height: 56,
           borderRadius: 10,
-          backgroundImage: `url(https://picsum.photos/seed/${item.seed}/200/160)`,
+          backgroundImage: `url(${item.image})`,
         }}
       />
       <div className="min-w-0 flex-1">

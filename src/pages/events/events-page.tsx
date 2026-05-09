@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import clsx from "clsx";
 import { PageTransition } from "@/widgets";
 import { Reveal, Stagger, StaggerItem } from "@/shared/ui";
@@ -446,10 +446,13 @@ function CalendarSection() {
 
 function NewsCard({ item }: { item: (typeof NEWS)[0] }) {
   return (
-    <article className="spec-card grad-border group flex flex-col overflow-hidden rounded-[20px] bg-white/[0.03] backdrop-blur-xl">
+    <Link
+      to={`/news/${item.id}`}
+      className="spec-card grad-border group flex flex-col overflow-hidden rounded-[20px] bg-white/[0.03] backdrop-blur-xl"
+    >
       <div className="relative h-44 overflow-hidden">
         <img
-          src={`https://picsum.photos/seed/${item.imageSeed}/600/320`}
+          src={item.imageSeed}
           alt={item.title}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
@@ -478,11 +481,11 @@ function NewsCard({ item }: { item: (typeof NEWS)[0] }) {
         <p className="line-clamp-3 text-[12px] leading-relaxed text-white/55">
           {item.excerpt}
         </p>
-        <button className="mt-4 self-start text-[12px] font-semibold text-violet-300 transition hover:text-white">
+        <span className="mt-4 self-start text-[12px] font-semibold text-violet-300 transition group-hover:text-white">
           Читати далі →
-        </button>
+        </span>
       </div>
-    </article>
+    </Link>
   );
 }
 
@@ -584,7 +587,7 @@ function ActivityCard({ item }: { item: (typeof ACTIVITY_CATEGORIES)[0] }) {
     <div className="spec-card grad-border group relative overflow-hidden rounded-[20px] bg-white/[0.03] backdrop-blur-xl">
       <div className="relative h-36 overflow-hidden">
         <img
-          src={`https://picsum.photos/seed/${item.imageSeed}/600/240`}
+          src={item.imageSeed}
           alt={meta.label}
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
         />

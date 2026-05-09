@@ -175,7 +175,7 @@ function MasterPage() {
         title="Наступний рівень"
         gradientWord="твоєї кар'єри"
         description="1,5 роки поглибленої підготовки в IT, AI та кібербезпеці. Наукова та професійна магістратура з можливістю держзамовлення і підготовки до PhD."
-        imageSeed="entrant-master"
+        imageSeed="/images/students-workshop.jpg"
         stats={[
           { value: "1,5", label: "роки навчання" },
           { value: "5", label: "спеціальностей" },

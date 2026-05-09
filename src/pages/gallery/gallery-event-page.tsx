@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { PageTransition } from "@/widgets";
-import { ALL_PHOTOS, GALLERY_EVENTS } from "@/shared/model/gallery-data";
+import { ALL_PHOTOS, GALLERY_EVENTS, GALLERY_PHOTOS } from "@/shared/model/gallery-data";
 import { ROUTES } from "@/shared/model/routes";
 import { PhotoGrid, InnerPageLayout } from "./ui";
 
@@ -33,7 +33,7 @@ function GalleryEventPage() {
     <PageTransition isPaddingOn={false} className="!pt-0 pb-0">
       <div className="relative h-[260px] overflow-hidden bg-[#08090f] sm:h-[340px]">
         <img
-          src={`https://picsum.photos/seed/${event.coverSeed}/1400/400`}
+          src={GALLERY_PHOTOS[event.coverSeed % GALLERY_PHOTOS.length]}
           alt={event.title}
           className="h-full w-full object-cover opacity-50"
         />

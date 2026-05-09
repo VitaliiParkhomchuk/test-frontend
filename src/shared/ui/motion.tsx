@@ -17,43 +17,43 @@ const EASE_OUT_EXPO: [number, number, number, number] = [0.16, 1, 0.3, 1];
 // ── Reveal variants ───────────────────────────────────────────────────────────
 const revealVariants: Record<string, Variants> = {
   up: {
-    hidden: { opacity: 0, y: 28, filter: "blur(6px)" },
+    hidden: { opacity: 0, y: 56, filter: "blur(10px)" },
     show: {
       opacity: 1,
       y: 0,
       filter: "blur(0px)",
-      transition: { duration: 0.7, ease: EASE_OUT_EXPO },
+      transition: { duration: 0.8, ease: EASE_OUT_EXPO },
     },
   },
   fade: {
     hidden: { opacity: 0 },
-    show: { opacity: 1, transition: { duration: 0.8, ease: EASE_OUT_EXPO } },
+    show: { opacity: 1, transition: { duration: 1.0, ease: EASE_OUT_EXPO } },
   },
   scale: {
-    hidden: { opacity: 0, scale: 0.94, y: 20 },
+    hidden: { opacity: 0, scale: 0.86, y: 40 },
     show: {
       opacity: 1,
       scale: 1,
       y: 0,
-      transition: { duration: 0.75, ease: EASE_OUT_EXPO },
+      transition: { duration: 0.85, ease: EASE_OUT_EXPO },
     },
   },
   left: {
-    hidden: { opacity: 0, x: -32, filter: "blur(4px)" },
+    hidden: { opacity: 0, x: -56, filter: "blur(8px)" },
     show: {
       opacity: 1,
       x: 0,
       filter: "blur(0px)",
-      transition: { duration: 0.7, ease: EASE_OUT_EXPO },
+      transition: { duration: 0.8, ease: EASE_OUT_EXPO },
     },
   },
   right: {
-    hidden: { opacity: 0, x: 32, filter: "blur(4px)" },
+    hidden: { opacity: 0, x: 56, filter: "blur(8px)" },
     show: {
       opacity: 1,
       x: 0,
       filter: "blur(0px)",
-      transition: { duration: 0.7, ease: EASE_OUT_EXPO },
+      transition: { duration: 0.8, ease: EASE_OUT_EXPO },
     },
   },
 };
@@ -69,7 +69,7 @@ export function Reveal({
   mode = "up",
   delay = 0,
   className,
-  amount = 0.2,
+  amount = 0.35,
   once = true,
   inView = true,
   ...rest
@@ -107,8 +107,8 @@ export function Stagger({
   as: As = "div",
   className,
   delay = 0,
-  stagger = 0.08,
-  amount = 0.15,
+  stagger = 0.1,
+  amount = 0.25,
   once = true,
   inView = true,
   ...rest

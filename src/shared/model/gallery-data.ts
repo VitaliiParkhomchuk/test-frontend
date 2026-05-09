@@ -16,10 +16,24 @@ export interface GalleryEvent {
   coverSeed: number;
 }
 
-const p = (seed: number, wide: boolean): string =>
-  wide
-    ? `https://picsum.photos/seed/${seed}/900/600`
-    : `https://picsum.photos/seed/${seed}/600/900`;
+const GALLERY_PHOTOS = [
+  "/images/students-stage.jpg",
+  "/images/students-lecture.jpg",
+  "/images/students-christmas.jpg",
+  "/images/noosphere-workshop.jpg",
+  "/images/students-event.jpg",
+  "/images/students-tennis.jpg",
+  "/images/vodnik-mascot.jpg",
+  "/images/halloween-event.jpg",
+  "/images/students-hall.jpg",
+  "/images/students-audience.jpg",
+  "/images/students-workshop.jpg",
+  "/images/students-sport.jpg",
+  "/images/students-guitar.jpg",
+];
+
+const p = (seed: number, _wide: boolean): string =>
+  GALLERY_PHOTOS[seed % GALLERY_PHOTOS.length];
 
 export const GALLERY_EVENTS: GalleryEvent[] = [
   {

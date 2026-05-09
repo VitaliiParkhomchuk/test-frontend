@@ -33,6 +33,10 @@ export const router = createBrowserRouter([
         lazy: () => import("@/pages/events/events-page"),
       },
       {
+        path: ROUTES.NEWS_ITEM,
+        lazy: () => import("@/pages/events/news-item-page"),
+      },
+      {
         path: ROUTES.SCIENCE_PUBLICATIONS,
         lazy: () => import("@/pages/science/publications-page"),
       },

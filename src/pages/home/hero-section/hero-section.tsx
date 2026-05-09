@@ -13,9 +13,9 @@ const QUICK_LINKS = [
 ];
 
 const FALLBACK_SLIDES = [
-  { image: "https://picsum.photos/seed/nnkiti-campus/1920/1080" },
-  { image: "https://picsum.photos/seed/nnkiti-lab/1920/1080" },
-  { image: "https://picsum.photos/seed/nnkiti-students/1920/1080" },
+  { image: "/images/students-stage.jpg" },
+  { image: "/images/students-lecture.jpg" },
+  { image: "/images/students-christmas.jpg" },
 ];
 
 function HeroQuickLink({ q }: { q: { label: string; to: string } }) {

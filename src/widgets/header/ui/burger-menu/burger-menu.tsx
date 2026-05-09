@@ -1,9 +1,12 @@
 import clsx from "clsx";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion } from "framer-motion";
 import { rqClient } from "@/shared/api/instance";
+import { globalLenis } from "@/shared/hooks";
+import { logout } from "@/shared/model/session";
+import { ROUTES } from "@/shared/model/routes";
 import type { NavigationMenuData } from "../../types";
 import { ChangeLanguage } from "../../ui";
 import Accordion from "./accordion";
@@ -18,7 +21,13 @@ export default function BurgerMenu({
   burgerMenuData: NavigationMenuData[];
 }) {
   const { t } = useTranslation("header");
+  const navigate = useNavigate();
   const userData = rqClient.useQuery("get", "/users/me/").data;
+
+  const handleLogout = () => {
+    logout();
+    navigate(ROUTES.HOME);
+  };
 
   const extendedBurgerMenuData = [...burgerMenuData];
 
@@ -29,13 +38,24 @@ export default function BurgerMenu({
       list: [
         { title: t("studentAccount.schedule"), link: "https://desk.nuwm.edu.ua/cgi-bin/timetable.cgi" },
         { title: t("studentAccount.journal"), link: "https://desk.nuwm.edu.ua/cgi-bin/kaf.cgi?n=999&t=98" },
-        { title: t("studentAccount.logout"), link: "/sign-up" },
+        { title: t("studentAccount.logout"), link: "#", onClick: handleLogout },
       ],
     });
   }
 
   const [isOpen, setIsOpen] = useState(false);
   const [openIndex, setOpenIndex] = useState(-1);
+
+  useEffect(() => {
+    if (isOpen) {
+      globalLenis?.stop();
+    } else {
+      globalLenis?.start();
+    }
+    return () => {
+      globalLenis?.start();
+    };
+  }, [isOpen]);
 
   const toggleMenu = () => {
     setIsOpen((prev) => !prev);

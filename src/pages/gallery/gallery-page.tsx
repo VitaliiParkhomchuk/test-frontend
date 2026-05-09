@@ -6,7 +6,6 @@ import {
   ALL_PHOTOS,
   GALLERY_EVENTS,
   GALLERY_YEARS,
-  GALLERY_PHOTOS,
   type Photo,
   type GalleryEvent,
 } from "@/shared/model/gallery-data";
@@ -182,7 +181,7 @@ function EventCard({ event }: { event: GalleryEvent }) {
     >
       <div className="relative aspect-[16/9] overflow-hidden">
         <img
-          src={GALLERY_PHOTOS[event.coverSeed % GALLERY_PHOTOS.length]}
+          src={ALL_PHOTOS[event.coverSeed % ALL_PHOTOS.length].src}
           alt={event.title}
           loading="lazy"
           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"

@@ -47,7 +47,7 @@ const NEWS: NewsItem[] = [
 function Pill({ children, grad }: { children: React.ReactNode; grad?: boolean }) {
   return (
     <span
-      className="inline-block"
+      className="inline-block flex-shrink-0"
       style={{
         fontSize: 10,
         fontWeight: 700,
@@ -89,54 +89,37 @@ function SeeAll() {
 }
 
 function NewsFeat({ item }: { item: NewsItem }) {
-  const [h, setH] = useState(false);
   return (
     <Link
       to={`${ROUTES.EVENTS}#news`}
-      onMouseEnter={() => setH(true)}
-      onMouseLeave={() => setH(false)}
-      className="grad-border card-hover block overflow-hidden"
-      style={{
-        borderRadius: 24,
-        background: "rgba(255,255,255,0.03)",
-      }}
+      className="group grad-border relative block h-full overflow-hidden rounded-[24px] transition-transform duration-200 active:scale-[0.99]"
     >
+      {/* full-bleed image with subtle zoom */}
       <div
-        className="aspect-[16/9] w-full bg-cover bg-center sm:aspect-auto sm:h-[260px]"
-        style={{
-          backgroundImage: `url(${item.image})`,
-        }}
+        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.06]"
+        style={{ backgroundImage: `url(${item.image})` }}
       />
-      <div className="px-5 py-6 sm:p-7">
-        <div className="mb-3.5 flex items-center gap-2.5">
+
+      {/* gradient overlay — darker at bottom for text legibility */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#08090f] via-[#08090f]/45 to-transparent" />
+
+      {/* spacer that sets card height */}
+      <div className="min-h-[360px] sm:min-h-[430px]" />
+
+      {/* bottom content: rests 48 px below natural position so "Читати" is hidden;
+          slides to translate-y-0 on hover revealing it */}
+      <div className="absolute inset-x-0 bottom-0 translate-y-[48px] p-6 transition-transform duration-300 ease-out group-hover:translate-y-0 sm:p-7">
+        <div className="mb-4 flex items-center gap-2.5">
           <Pill grad>{item.tag}</Pill>
-          <span style={{ fontSize: 11, color: "rgba(255,255,255,0.3)" }}>
-            {item.date}
-          </span>
+          <span className="text-[11px] text-white/40">{item.date}</span>
         </div>
         <h3
-          className="font-display font-bold"
-          style={{
-            fontSize: "1.1rem",
-            letterSpacing: "-0.02em",
-            lineHeight: 1.4,
-            color: h ? "#fff" : "rgba(255,255,255,0.9)",
-            transition: "color 180ms",
-          }}
+          className="font-display font-bold text-white"
+          style={{ fontSize: "1.1rem", letterSpacing: "-0.02em", lineHeight: 1.4 }}
         >
           {item.title}
         </h3>
-        <div
-          className="mt-5 inline-flex items-center gap-1.5"
-          style={{
-            fontSize: 12,
-            fontWeight: 700,
-            color: h ? "#a684ff" : "rgba(255,255,255,0.3)",
-            transition: "color 180ms",
-            letterSpacing: "0.04em",
-            textTransform: "uppercase",
-          }}
-        >
+        <div className="mt-5 inline-flex items-center gap-1.5 text-[12px] font-bold uppercase tracking-[0.04em] text-violet-400">
           Читати <span aria-hidden>→</span>
         </div>
       </div>
@@ -145,46 +128,35 @@ function NewsFeat({ item }: { item: NewsItem }) {
 }
 
 function NewsRow({ item }: { item: NewsItem }) {
-  const [h, setH] = useState(false);
   return (
     <Link
       to={`${ROUTES.EVENTS}#news`}
-      onMouseEnter={() => setH(true)}
-      onMouseLeave={() => setH(false)}
-      className="flex flex-1 items-center"
+      className="group flex h-full items-center gap-4 rounded-[16px] p-[18px] transition-all duration-200 hover:border-violet-500/20 hover:bg-violet-500/[0.06] active:scale-[0.98]"
       style={{
-        gap: 16,
-        padding: 18,
-        borderRadius: 16,
-        background: h ? "rgba(166,132,255,0.06)" : "rgba(255,255,255,0.03)",
-        border: `1px solid ${h ? "rgba(166,132,255,0.2)" : "rgba(255,255,255,0.06)"}`,
-        transition: "all 200ms",
+        background: "rgba(255,255,255,0.03)",
+        border: "1px solid rgba(255,255,255,0.06)",
       }}
     >
+      {/* thumbnail with zoom */}
       <div
-        className="flex-shrink-0 bg-cover bg-center"
-        style={{
-          width: 72,
-          height: 56,
-          borderRadius: 10,
-          backgroundImage: `url(${item.image})`,
-        }}
-      />
+        className="flex-shrink-0 overflow-hidden rounded-[12px]"
+        style={{ width: 96, height: 76 }}
+      >
+        <div
+          className="h-full w-full bg-cover bg-center transition-transform duration-500 group-hover:scale-[1.08]"
+          style={{ backgroundImage: `url(${item.image})` }}
+        />
+      </div>
+
+      {/* text */}
       <div className="min-w-0 flex-1">
-        <div className="mb-1.5 flex items-center gap-2">
+        <div className="mb-3 flex items-center gap-2">
           <Pill>{item.tag}</Pill>
-          <span style={{ fontSize: 10, color: "rgba(255,255,255,0.25)" }}>
-            {item.date}
-          </span>
+          <span className="text-[10px] text-white/25">{item.date}</span>
         </div>
         <p
-          className="font-display"
+          className="font-display font-semibold text-[0.85rem] leading-[1.4] text-white/75 transition-colors duration-150 group-hover:text-white"
           style={{
-            fontWeight: 600,
-            fontSize: "0.85rem",
-            lineHeight: 1.4,
-            color: h ? "#fff" : "rgba(255,255,255,0.75)",
-            transition: "color 150ms",
             display: "-webkit-box",
             WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
@@ -193,8 +165,16 @@ function NewsRow({ item }: { item: NewsItem }) {
         >
           {item.title}
         </p>
+        {/* "Читати" fades + slides up from below on hover */}
+        <div className="mt-2 translate-y-1 text-[11px] font-bold uppercase tracking-[0.04em] text-violet-400 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+          Читати →
+        </div>
       </div>
-      <span style={{ color: h ? "#a684ff" : "rgba(255,255,255,0.15)", fontSize: 15 }}>
+
+      <span
+        className="flex-shrink-0 text-[15px] transition-colors duration-200 group-hover:text-violet-400"
+        style={{ color: "rgba(255,255,255,0.15)" }}
+      >
         ›
       </span>
     </Link>
@@ -227,12 +207,15 @@ export default function EventsSection({ className = "" }: { className?: string }
         </Reveal>
 
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.4fr_1fr]">
-          <Reveal mode="left" amount={0.15}>
+          {/* left: featured card — Reveal passes h-full down */}
+          <Reveal mode="left" amount={0.15} className="h-full">
             <NewsFeat item={featured} />
           </Reveal>
-          <Stagger className="flex flex-col gap-3" stagger={0.1} amount={0.1}>
+
+          {/* right: three rows stretched to match left card height */}
+          <Stagger className="flex h-full flex-col gap-3" stagger={0.1} amount={0.1}>
             {rest.map((item) => (
-              <StaggerItem key={item.id} mode="right">
+              <StaggerItem key={item.id} mode="right" className="flex flex-1 flex-col">
                 <NewsRow item={item} />
               </StaggerItem>
             ))}

@@ -96,13 +96,13 @@ export default function EntrantCtaSection({
           <div className="relative z-[1] flex w-full flex-shrink-0 flex-col gap-3 md:w-auto">
             <Link
               to={ROUTES.BACHELOR}
-              className="inline-flex items-center justify-center gap-2 rounded-[14px] bg-gradient-to-r from-violet-500 to-blue-500 px-7 py-3.5 text-[14px] font-semibold text-white shadow-[0_4px_16px_rgba(166,132,255,0.2)] transition-all duration-200 hover:scale-[1.02] sm:px-9 sm:py-4 sm:text-[15px]"
+              className="inline-flex items-center justify-center gap-2 rounded-[14px] bg-gradient-to-r from-violet-500 to-blue-500 px-7 py-3.5 text-[14px] font-semibold text-white shadow-[0_4px_16px_rgba(166,132,255,0.2)] transition-all duration-200 hover:scale-[1.02] active:scale-95 sm:px-9 sm:py-4 sm:text-[15px]"
             >
               Подати заявку <span aria-hidden>→</span>
             </Link>
             <Link
               to={ROUTES.BACHELOR}
-              className="inline-flex items-center justify-center gap-2 rounded-[14px] border border-white/15 bg-transparent px-7 py-3.5 text-[14px] font-semibold text-white/60 transition-colors duration-200 hover:text-white sm:px-9 sm:py-4 sm:text-[15px]"
+              className="inline-flex items-center justify-center gap-2 rounded-[14px] border border-white/15 bg-transparent px-7 py-3.5 text-[14px] font-semibold text-white/60 transition-all duration-200 hover:text-white active:scale-95 sm:px-9 sm:py-4 sm:text-[15px]"
             >
               Дізнатися умови
             </Link>

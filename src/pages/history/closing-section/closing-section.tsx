@@ -45,13 +45,13 @@ export default function ClosingSection({ className }: { className?: string }) {
             <div className="flex flex-wrap gap-3">
               <Link
                 to={`/department/${DEPARTMENTS_DATA[0].id}`}
-                className="inline-flex items-center gap-2 rounded-[14px] bg-gradient-to-r from-violet-500 to-blue-500 px-6 py-3.5 text-[14px] font-semibold text-white shadow-[0_4px_16px_rgba(166,132,255,0.3)] transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_8px_32px_rgba(166,132,255,0.55)]"
+                className="inline-flex items-center gap-2 rounded-[14px] bg-gradient-to-r from-violet-500 to-blue-500 px-6 py-3.5 text-[14px] font-semibold text-white shadow-[0_4px_16px_rgba(166,132,255,0.3)] transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_8px_32px_rgba(166,132,255,0.55)] active:scale-95"
               >
                 Наші кафедри <span aria-hidden>→</span>
               </Link>
               <Link
                 to={ROUTES.ALUMNI}
-                className="inline-flex items-center gap-2 rounded-[14px] border border-white/15 bg-white/[0.04] px-6 py-3.5 text-[14px] font-semibold text-white backdrop-blur-md transition-colors duration-200 hover:bg-white/[0.10]"
+                className="inline-flex items-center gap-2 rounded-[14px] border border-white/15 bg-white/[0.04] px-6 py-3.5 text-[14px] font-semibold text-white backdrop-blur-md transition-all duration-200 hover:bg-white/[0.10] active:scale-95"
               >
                 Випускники <span aria-hidden>→</span>
               </Link>

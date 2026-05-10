@@ -27,7 +27,7 @@ export default function Accordion({
     <div
       onClick={onClick}
       className={clsx(
-        "grad-border group cursor-pointer overflow-hidden rounded-[18px] backdrop-blur-xl transition-colors duration-300",
+        "grad-border group cursor-pointer overflow-hidden rounded-[18px] backdrop-blur-xl transition-all duration-300 active:scale-[0.99]",
         isAccordionOpen
           ? "bg-gradient-to-br from-violet-500/[0.08] to-blue-500/[0.05]"
           : "bg-white/[0.03] hover:bg-white/[0.05]"

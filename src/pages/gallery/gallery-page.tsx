@@ -6,6 +6,7 @@ import {
   ALL_PHOTOS,
   GALLERY_EVENTS,
   GALLERY_YEARS,
+  GALLERY_PHOTOS,
   type Photo,
   type GalleryEvent,
 } from "@/shared/model/gallery-data";
@@ -162,7 +163,7 @@ function ByYearSection() {
       <div className="mt-8 flex justify-center">
         <Link
           to={`/gallery/year/${activeYear}`}
-          className="inline-flex items-center gap-2 rounded-[14px] border border-white/15 bg-white/[0.04] px-6 py-3 text-[13px] font-semibold text-white backdrop-blur-md transition-colors duration-200 hover:bg-white/[0.10]"
+          className="inline-flex items-center gap-2 rounded-[14px] border border-white/15 bg-white/[0.04] px-6 py-3 text-[13px] font-semibold text-white backdrop-blur-md transition-all duration-200 hover:bg-white/[0.10] active:scale-95"
         >
           Всі фото {activeYear} року <span>→</span>
         </Link>
@@ -181,10 +182,10 @@ function EventCard({ event }: { event: GalleryEvent }) {
     >
       <div className="relative aspect-[16/9] overflow-hidden">
         <img
-          src={ALL_PHOTOS[event.coverSeed % ALL_PHOTOS.length].src}
+          src={GALLERY_PHOTOS[event.coverSeed % GALLERY_PHOTOS.length]}
           alt={event.title}
           loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="block h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#08090f] via-transparent to-transparent" />
         <span className="font-display absolute bottom-3 right-3 rounded-full border border-violet-500/30 bg-violet-500/15 px-3 py-1 text-[11px] font-bold text-violet-100 backdrop-blur-md">

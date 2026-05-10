@@ -55,9 +55,7 @@ const SPECIALTIES = [
   },
 ];
 
-const SLIDE_WIDTH_PX = 300;
 const SPACE_BETWEEN_PX = 20;
-const PX_PER_SECOND = 60;
 
 function SeeAll() {
   const [h, setH] = useState(false);
@@ -85,23 +83,12 @@ function NavButton({
   direction: "prev" | "next";
   onClick: () => void;
 }) {
-  const [h, setH] = useState(false);
   return (
     <button
       type="button"
       onClick={onClick}
-      onMouseEnter={() => setH(true)}
-      onMouseLeave={() => setH(false)}
       aria-label={direction === "prev" ? "Попередня програма" : "Наступна програма"}
-      className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border transition-all"
-      style={{
-        background: h
-          ? "linear-gradient(135deg, #a684ff 0%, #51a2ff 100%)"
-          : "rgba(255,255,255,0.04)",
-        borderColor: h ? "transparent" : "rgba(255,255,255,0.12)",
-        color: h ? "#fff" : "rgba(255,255,255,0.7)",
-        transition: "all 200ms",
-      }}
+      className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-white/[0.12] bg-white/[0.04] text-white/70 transition-all duration-200 hover:border-transparent hover:bg-gradient-to-br hover:from-violet-500 hover:to-blue-500 hover:text-white active:scale-95"
     >
       <span style={{ fontSize: 18, lineHeight: 1 }}>
         {direction === "prev" ? "←" : "→"}
@@ -235,7 +222,22 @@ export default function SpecialtiesSection({
   className?: string;
 }) {
   const swiperRef = useRef<SwiperType | null>(null);
-  const slideTravelMs = ((SLIDE_WIDTH_PX + SPACE_BETWEEN_PX) / PX_PER_SECOND) * 1000;
+
+  function handlePrev() {
+    const s = swiperRef.current;
+    if (!s) return;
+    s.autoplay.stop();
+    s.slidePrev(600);
+    s.autoplay.start();
+  }
+
+  function handleNext() {
+    const s = swiperRef.current;
+    if (!s) return;
+    s.autoplay.stop();
+    s.slideNext(600);
+    s.autoplay.start();
+  }
 
   return (
     <section className={clsx("bg-[#08090f] py-16 lg:py-24", className)}>
@@ -258,20 +260,14 @@ export default function SpecialtiesSection({
           <div className="flex items-center gap-5">
             <SeeAll />
             <div className="flex items-center gap-2.5">
-              <NavButton
-                direction="prev"
-                onClick={() => swiperRef.current?.slidePrev(600)}
-              />
-              <NavButton
-                direction="next"
-                onClick={() => swiperRef.current?.slideNext(600)}
-              />
+              <NavButton direction="prev" onClick={handlePrev} />
+              <NavButton direction="next" onClick={handleNext} />
             </div>
           </div>
         </Reveal>
       </div>
 
-      <div className="overflow-hidden">
+      <div className="">
         <Swiper
           onSwiper={(s) => {
             swiperRef.current = s;
@@ -279,18 +275,16 @@ export default function SpecialtiesSection({
           modules={[Autoplay]}
           loop
           autoplay={{
-            delay: 0,
+            delay: 3500,
             disableOnInteraction: false,
-            pauseOnMouseEnter: false,
-            stopOnLastSlide: false,
+            pauseOnMouseEnter: true,
           }}
-          speed={slideTravelMs}
+          speed={600}
           slidesPerView="auto"
           spaceBetween={SPACE_BETWEEN_PX}
-          simulateTouch={false}
           allowTouchMove
-          grabCursor={false}
-          className="specialties-swiper !px-4 py-2 sm:!px-6 lg:!px-10 [&_.swiper-wrapper]:!items-stretch [&_.swiper-wrapper]:!ease-linear [&_.swiper-slide]:!h-auto"
+          grabCursor
+          className="specialties-swiper py-2 sm:!px-6 lg:!px-10 [&_.swiper-wrapper]:!items-stretch [&_.swiper-slide]:!h-auto"
         >
           {SPECIALTIES.map((s) => (
             <SwiperSlide

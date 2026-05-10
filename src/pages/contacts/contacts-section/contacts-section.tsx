@@ -147,13 +147,13 @@ function HeroSection() {
           <Reveal mode="right" delay={0.3} inView={false} className="flex flex-wrap gap-3 lg:justify-end">
             <a
               href={`mailto:${deaneryData.dailyEducation.email}`}
-              className="inline-flex items-center gap-2 rounded-[14px] border border-white/15 bg-white/[0.04] px-6 py-3.5 text-[14px] font-semibold text-white backdrop-blur-md transition-colors duration-200 hover:bg-white/[0.10]"
+              className="inline-flex items-center gap-2 rounded-[14px] border border-white/15 bg-white/[0.04] px-6 py-3.5 text-[14px] font-semibold text-white backdrop-blur-md transition-all duration-200 hover:bg-white/[0.10] active:scale-95"
             >
               <span aria-hidden>✉</span> Написати листа
             </a>
             <Link
               to={ROUTES.ASK_QUESTION}
-              className="sheen inline-flex items-center gap-2 rounded-[14px] bg-gradient-to-r from-violet-500 to-blue-500 px-6 py-3.5 text-[14px] font-semibold text-white shadow-[0_4px_16px_rgba(166,132,255,0.3)] transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_8px_32px_rgba(166,132,255,0.55)]"
+              className="sheen inline-flex items-center gap-2 rounded-[14px] bg-gradient-to-r from-violet-500 to-blue-500 px-6 py-3.5 text-[14px] font-semibold text-white shadow-[0_4px_16px_rgba(166,132,255,0.3)] transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_8px_32px_rgba(166,132,255,0.55)] active:scale-95"
             >
               Задати питання <span aria-hidden>→</span>
             </Link>
@@ -298,7 +298,7 @@ export function ContactsSection() {
                   href={locationData.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-5 inline-flex items-center gap-2 rounded-[12px] border border-violet-500/30 bg-violet-500/10 px-4 py-2 text-[12px] font-semibold text-violet-200 transition-all hover:bg-violet-500/20 hover:text-white"
+                  className="mt-5 inline-flex items-center gap-2 rounded-[12px] border border-violet-500/30 bg-violet-500/10 px-4 py-2 text-[12px] font-semibold text-violet-200 transition-all duration-200 hover:bg-violet-500/20 hover:text-white active:scale-95"
                 >
                   Відкрити в Google Maps <span aria-hidden>→</span>
                 </a>

@@ -16,7 +16,7 @@ export interface GalleryEvent {
   coverSeed: number;
 }
 
-const GALLERY_PHOTOS = [
+export const GALLERY_PHOTOS = [
   "/images/students-stage.jpg",
   "/images/students-lecture.jpg",
   "/images/students-christmas.jpg",

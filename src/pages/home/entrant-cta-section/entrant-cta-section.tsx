@@ -55,7 +55,7 @@ export default function EntrantCtaSection({
 
           <div className="relative z-[1]">
             <span
-              className="inline-block"
+              className="inline-flex items-center gap-1.5"
               style={{
                 fontSize: 10,
                 fontWeight: 700,
@@ -70,7 +70,15 @@ export default function EntrantCtaSection({
                 marginBottom: 20,
               }}
             >
-              🚀 Вступна кампанія 2025
+              <svg
+                aria-hidden
+                viewBox="0 0 16 16"
+                fill="none"
+                style={{ width: 11, height: 11, flexShrink: 0 }}
+              >
+                <path d="M8 1L9.6 6H15L10.7 9.3L12.3 14.3L8 11L3.7 14.3L5.3 9.3L1 6H6.4L8 1Z" fill="currentColor" />
+              </svg>
+              Вступна кампанія 2025
             </span>
             <h2
               className="font-display font-black text-white"
@@ -85,7 +93,7 @@ export default function EntrantCtaSection({
               <span className="text-grad">майбутнє?</span>
             </h2>
             <p
-              className="text-[15px] text-white/50"
+              className="text-[15px] text-white/70"
               style={{ lineHeight: 1.65, maxWidth: 440 }}
             >
               Подай заявку на вступ до НУВГП вже зараз та обери програму, яка

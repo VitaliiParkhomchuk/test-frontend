@@ -51,11 +51,11 @@ function SocialLink({ icon, label, href }: { icon: string; label: string; href: 
         border: `1px solid ${h ? "rgba(166,132,255,0.25)" : "rgba(255,255,255,0.07)"}`,
         fontSize: 13,
         fontWeight: 500,
-        color: h ? "#fff" : "rgba(255,255,255,0.4)",
+        color: h ? "#fff" : "rgba(255,255,255,0.65)",
         transition: "all 180ms",
       }}
     >
-      <span style={{ color: h ? "#a684ff" : "rgba(255,255,255,0.3)" }}>
+      <span style={{ color: h ? "#a684ff" : "rgba(255,255,255,0.55)" }}>
         {ICONS[icon]}
       </span>
       {label}
@@ -85,14 +85,14 @@ export default function SocialSection({ className = "" }: { className?: string }
             fontWeight: 700,
             letterSpacing: "0.1em",
             textTransform: "uppercase",
-            color: "rgba(255,255,255,0.2)",
+            color: "rgba(255,255,255,0.5)",
           }}
         >
           Соцмережі
         </span>
         <div
           className="hidden sm:block flex-1"
-          style={{ height: 1, background: "rgba(255,255,255,0.06)" }}
+          style={{ height: 1, background: "rgba(255,255,255,0.5)" }}
         />
         <Stagger className="flex flex-wrap gap-2 sm:gap-2.5" stagger={0.07}>
           {SOCIALS.map((s) => (

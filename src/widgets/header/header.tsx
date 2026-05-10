@@ -24,7 +24,7 @@ export function Header() {
   const navigationMenuData: NavigationMenuData[] = [
     {
       title: t("navigationMenu.aboutUs"),
-      link: "#",
+      link: ROUTES.HISTORY,
       list: [
         { title: t("navigationMenu.history"), link: ROUTES.HISTORY },
         { title: t("navigationMenu.strategy"), link: ROUTES.STRATEGY },
@@ -35,7 +35,7 @@ export function Header() {
     },
     {
       title: t("navigationMenu.forEntrant"),
-      link: "#",
+      link: ROUTES.BACHELOR,
       list: [
         { title: t("navigationMenu.undergraduateStudies"), link: ROUTES.UNDERGRADUATE },
         { title: t("navigationMenu.bachelorDegree"), link: ROUTES.BACHELOR },
@@ -45,7 +45,7 @@ export function Header() {
     },
     {
       title: t("navigationMenu.departments"),
-      link: "#",
+      link: `/department/${DEPARTMENTS_DATA[0].id}`,
       list: DEPARTMENTS_DATA.map((dept) => ({
         title: dept.name,
         link: `/department/${dept.id}`,
@@ -53,17 +53,15 @@ export function Header() {
     },
     {
       title: t("navigationMenu.events"),
-      link: "#",
+      link: ROUTES.EVENTS,
       list: [
         { title: t("navigationMenu.eventsCalendar"), link: `${ROUTES.EVENTS}#calendar` },
         { title: t("navigationMenu.news"), link: `${ROUTES.EVENTS}#news` },
-        { title: t("navigationMenu.announcements"), link: `${ROUTES.EVENTS}#announcements` },
-        { title: t("navigationMenu.activities"), link: `${ROUTES.EVENTS}#activities` },
       ],
     },
     {
       title: t("navigationMenu.science"),
-      link: "#",
+      link: ROUTES.SCIENCE_PUBLICATIONS,
       list: [
         { title: t("navigationMenu.publications"), link: ROUTES.SCIENCE_PUBLICATIONS },
         { title: t("navigationMenu.research"), link: ROUTES.SCIENCE_RESEARCH },
@@ -73,7 +71,7 @@ export function Header() {
     },
     {
       title: t("navigationMenu.partners"),
-      link: "#",
+      link: ROUTES.PARTNERS_BUSINESS,
       list: [
         { title: t("navigationMenu.academicMobility"), link: ROUTES.PARTNERS_ACADEMIC_MOBILITY },
         { title: t("navigationMenu.businessPartners"), link: ROUTES.PARTNERS_BUSINESS },
@@ -81,7 +79,7 @@ export function Header() {
     },
     {
       title: t("navigationMenu.contacts"),
-      link: "#",
+      link: ROUTES.CONTACTS,
       list: [
         { title: t("navigationMenu.contacts"), link: ROUTES.CONTACTS },
         { title: t("navigationMenu.FAQ"), link: ROUTES.FAQ },
@@ -119,7 +117,7 @@ export function Header() {
           className="hidden flex-1 justify-center lg:flex"
           navigationMenuData={navigationMenuData}
         />
-        <SearchBar className="flex flex-1 justify-end lg:hidden" />
+        <SearchBar className="flex flex-1 justify-center lg:hidden" />
         <div className="hidden flex-shrink-0 items-center gap-2.5 lg:flex">
           <ChangeLanguage />
           <Link

@@ -44,7 +44,19 @@ const NEWS: NewsItem[] = [
   },
 ];
 
-function Pill({ children, grad }: { children: React.ReactNode; grad?: boolean }) {
+const TAG_COLORS: Record<string, { bg: string; border: string; color: string }> = {
+  "Наука":       { bg: "rgba(166,132,255,0.18)", border: "rgba(166,132,255,0.38)", color: "#c4a8ff" },
+  "Партнерство": { bg: "rgba(56,189,248,0.15)",  border: "rgba(56,189,248,0.32)",  color: "#7dd3fc" },
+  "Освіта":      { bg: "rgba(52,211,153,0.15)",  border: "rgba(52,211,153,0.32)",  color: "#6ee7b7" },
+  "Рейтинг":     { bg: "rgba(251,191,36,0.15)",  border: "rgba(251,191,36,0.32)",  color: "#fcd34d" },
+  "Подія":       { bg: "rgba(251,113,133,0.15)", border: "rgba(251,113,133,0.32)", color: "#fda4af" },
+  "Спорт":       { bg: "rgba(251,146,60,0.15)",  border: "rgba(251,146,60,0.32)",  color: "#fdba74" },
+};
+
+const DEFAULT_TAG_COLOR = { bg: "rgba(255,255,255,0.07)", border: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.5)" };
+
+function Pill({ tag }: { tag: string }) {
+  const { bg, border, color } = TAG_COLORS[tag] ?? DEFAULT_TAG_COLOR;
   return (
     <span
       className="inline-block flex-shrink-0"
@@ -55,16 +67,12 @@ function Pill({ children, grad }: { children: React.ReactNode; grad?: boolean })
         textTransform: "uppercase",
         padding: "4px 12px",
         borderRadius: 999,
-        background: grad
-          ? "linear-gradient(90deg,rgba(166,132,255,0.2),rgba(81,162,255,0.2))"
-          : "rgba(255,255,255,0.07)",
-        border: grad
-          ? "1px solid rgba(166,132,255,0.35)"
-          : "1px solid rgba(255,255,255,0.1)",
-        color: grad ? "#c4a8ff" : "rgba(255,255,255,0.5)",
+        background: bg,
+        border: `1px solid ${border}`,
+        color,
       }}
     >
-      {children}
+      {tag}
     </span>
   );
 }
@@ -97,7 +105,7 @@ function NewsFeat({ item }: { item: NewsItem }) {
       {/* full-bleed image with subtle zoom */}
       <div
         className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-[1.06]"
-        style={{ backgroundImage: `url(${item.image})` }}
+        style={{ backgroundImage: `url(${item.image})`, willChange: "transform" }}
       />
 
       {/* gradient overlay — darker at bottom for text legibility */}
@@ -110,8 +118,8 @@ function NewsFeat({ item }: { item: NewsItem }) {
           slides to translate-y-0 on hover revealing it */}
       <div className="absolute inset-x-0 bottom-0 translate-y-[48px] p-6 transition-transform duration-300 ease-out group-hover:translate-y-0 sm:p-7">
         <div className="mb-4 flex items-center gap-2.5">
-          <Pill grad>{item.tag}</Pill>
-          <span className="text-[11px] text-white/40">{item.date}</span>
+          <Pill tag={item.tag} />
+          <span className="text-[11px] text-white/60">{item.date}</span>
         </div>
         <h3
           className="font-display font-bold text-white"
@@ -144,15 +152,15 @@ function NewsRow({ item }: { item: NewsItem }) {
       >
         <div
           className="h-full w-full bg-cover bg-center transition-transform duration-500 group-hover:scale-[1.08]"
-          style={{ backgroundImage: `url(${item.image})` }}
+          style={{ backgroundImage: `url(${item.image})`, willChange: "transform" }}
         />
       </div>
 
       {/* text */}
       <div className="min-w-0 flex-1">
         <div className="mb-3 flex items-center gap-2">
-          <Pill>{item.tag}</Pill>
-          <span className="text-[10px] text-white/25">{item.date}</span>
+          <Pill tag={item.tag} />
+          <span className="text-[10px] text-white/55">{item.date}</span>
         </div>
         <p
           className="font-display font-semibold text-[0.85rem] leading-[1.4] text-white/75 transition-colors duration-150 group-hover:text-white"

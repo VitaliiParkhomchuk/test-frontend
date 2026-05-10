@@ -111,7 +111,7 @@ function HeroSection() {
 
       <div className="container-v2 relative z-[1]">
         <div className="grid items-end gap-10 lg:grid-cols-2">
-          <Stagger stagger={0.1} inView={false}>
+          <Stagger stagger={0.1} delay={0.35} inView={false}>
             <StaggerItem mode="scale">
               <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-violet-500/25 bg-violet-500/10 py-1.5 pl-2 pr-4 backdrop-blur-md">
                 <span className="rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-2.5 py-0.5 text-[10px] font-bold tracking-[0.06em] text-white">
@@ -144,7 +144,7 @@ function HeroSection() {
             </StaggerItem>
           </Stagger>
 
-          <Reveal mode="right" delay={0.3} inView={false} className="flex flex-wrap gap-3 lg:justify-end">
+          <Reveal mode="right" delay={0.65} inView={false} className="flex flex-wrap gap-3 lg:justify-end">
             <a
               href={`mailto:${deaneryData.dailyEducation.email}`}
               className="inline-flex items-center gap-2 rounded-[14px] border border-white/15 bg-white/[0.04] px-6 py-3.5 text-[14px] font-semibold text-white backdrop-blur-md transition-all duration-200 hover:bg-white/[0.10] active:scale-95"
@@ -160,6 +160,7 @@ function HeroSection() {
           </Reveal>
         </div>
       </div>
+      <div aria-hidden className="pointer-events-none absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent to-[#08090f]" />
     </section>
   );
 }

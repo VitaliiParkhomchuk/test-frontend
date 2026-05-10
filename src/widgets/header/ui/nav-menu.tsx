@@ -47,7 +47,9 @@ export function NavigationMenu({
             ref={index === activeIndex ? menuItemRef : null}
             onMouseEnter={() => setActiveIndex(index)}
           >
-            {item.title}
+            <Link to={item.link} className="flex h-full items-center" onClick={() => setActiveIndex(null)}>
+              {item.title}
+            </Link>
           </li>
         ))}
       </ul>

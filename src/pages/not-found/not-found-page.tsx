@@ -37,7 +37,7 @@ export function NotFoundPage() {
         />
 
         <div className="container-v2 relative z-[1] flex flex-col items-center">
-          <Reveal mode="scale" delay={0.05} inView={false}>
+          <Reveal mode="scale" delay={0.4} inView={false}>
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-violet-500/25 bg-violet-500/10 py-1.5 pl-2 pr-4 backdrop-blur-md">
               <span className="rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-2.5 py-0.5 text-[10px] font-bold tracking-[0.06em] text-white">
                 ERROR
@@ -46,7 +46,7 @@ export function NotFoundPage() {
             </div>
           </Reveal>
 
-          <Reveal mode="scale" delay={0.15} inView={false}>
+          <Reveal mode="scale" delay={0.5} inView={false}>
             <h1
               className="font-display font-black"
               style={{
@@ -60,7 +60,7 @@ export function NotFoundPage() {
             </h1>
           </Reveal>
 
-          <Reveal mode="up" delay={0.3} inView={false}>
+          <Reveal mode="up" delay={0.65} inView={false}>
             <p
               className="mx-auto mt-6 text-[14px] text-white/65 sm:text-[16px]"
               style={{ lineHeight: 1.7, maxWidth: 480 }}
@@ -69,7 +69,7 @@ export function NotFoundPage() {
             </p>
           </Reveal>
 
-          <Reveal mode="up" delay={0.45} inView={false}>
+          <Reveal mode="up" delay={0.8} inView={false}>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link
                 to="/"

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
@@ -127,7 +127,7 @@ function PartnersHero({
         }}
       />
 
-      <Stagger className="container-v2 relative z-[1]" stagger={0.08}>
+      <Stagger className="container-v2 relative z-[1]" stagger={0.08} delay={0.35} inView={false}>
         <StaggerItem mode="scale" className="mb-8 inline-flex items-center gap-2 rounded-full border border-violet-500/25 bg-violet-500/10 py-1.5 pl-2 pr-4 backdrop-blur-md">
           <span className="rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-2.5 py-0.5 text-[10px] font-bold tracking-[0.06em] text-white">
             ННКІТІ
@@ -173,6 +173,7 @@ function PartnersHero({
           ))}
         </StaggerItem>
       </Stagger>
+      <div aria-hidden className="pointer-events-none absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent to-[#08090f]" />
     </section>
   );
 }
@@ -269,6 +270,90 @@ function PropositionCard({
   );
 }
 
+type SelectOption = { value: string; label: string };
+
+function FilterSelect({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: SelectOption[];
+  onChange: (v: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onPointerDown(e: PointerEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, []);
+
+  const selected = options.find((o) => o.value === value);
+  const isFiltered = value !== "";
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className={clsx(
+          "flex h-11 items-center gap-2 rounded-[12px] border px-4 text-[13px] font-medium transition-all duration-200",
+          open
+            ? "border-violet-500/40 bg-violet-500/[0.12] text-white"
+            : isFiltered
+              ? "border-violet-500/30 bg-violet-500/[0.08] text-violet-200"
+              : "border-white/[0.08] bg-white/[0.04] text-white/55 hover:border-white/15 hover:text-white"
+        )}
+      >
+        <span className="max-w-[140px] truncate">{isFiltered ? selected?.label : label}</span>
+        <svg
+          width="10" height="6" viewBox="0 0 10 6" fill="none"
+          className={clsx("flex-shrink-0 transition-transform duration-200", open ? "rotate-180 text-violet-400" : "text-white/30")}
+        >
+          <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+
+      <div
+        className={clsx(
+          "absolute top-[calc(100%+6px)] left-0 z-[100] min-w-[200px] overflow-hidden rounded-[14px] border border-white/[0.07] shadow-[0_24px_56px_rgba(0,0,0,0.9)] transition-all duration-150 origin-top-left",
+          open ? "scale-100 opacity-100" : "pointer-events-none scale-95 opacity-0"
+        )}
+        style={{ backgroundColor: "#0f1019", backdropFilter: "none" }}
+      >
+        <div className="h-px bg-gradient-to-r from-violet-500/50 via-blue-500/25 to-transparent" />
+        <div className="flex flex-col p-1.5">
+          {options.map((option) => {
+            const isSelected = value === option.value;
+            return (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => { onChange(option.value); setOpen(false); }}
+                className={clsx(
+                  "flex w-full items-center gap-2.5 rounded-[10px] px-3 py-2.5 text-left text-[13px] transition-colors duration-100",
+                  isSelected
+                    ? "bg-violet-500/[0.14] text-white"
+                    : "text-white/50 hover:bg-white/[0.05] hover:text-white"
+                )}
+              >
+                <span className={clsx("w-3.5 flex-shrink-0 text-[11px] font-bold leading-none", isSelected ? "text-violet-400" : "text-transparent")}>✓</span>
+                <span className={clsx("truncate", isSelected && "font-semibold")}>{option.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function PropositionsSection({
   data,
   labels,
@@ -279,65 +364,52 @@ function PropositionsSection({
   dateLocale: string;
 }) {
   const [search, setSearch] = useState("");
-  const [selectedDirection, setSelectedDirection] = useState(labels.all);
-  const [selectedType, setSelectedType] = useState(labels.all);
+  const [selectedDirection, setSelectedDirection] = useState("");
+  const [selectedType, setSelectedType] = useState("");
 
-  const directions = useMemo(
+  const directionOptions = useMemo<SelectOption[]>(
     () => [
-      labels.all,
-      ...Array.from(new Set(data.propositions.map((item) => item.direction))),
+      { value: "", label: labels.all },
+      ...Array.from(new Set(data.propositions.map((item) => item.direction))).map((d) => ({ value: d, label: d })),
     ],
     [data.propositions, labels.all]
   );
 
-  const types = useMemo(
+  const typeOptions = useMemo<SelectOption[]>(
     () => [
-      labels.all,
-      ...Array.from(new Set(data.propositions.map((item) => item.type))),
+      { value: "", label: labels.all },
+      ...Array.from(new Set(data.propositions.map((item) => item.type))).map((t) => ({ value: t, label: t })),
     ],
     [data.propositions, labels.all]
   );
 
   const filteredPropositions = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
-
     return data.propositions.filter((item) => {
       const matchesSearch =
-        normalizedSearch.length === 0 ||
-        [
-          item.partner,
-          item.name,
-          item.description,
-          item.direction,
-          item.format,
-          ...item.skills,
-        ]
+        !normalizedSearch ||
+        [item.partner, item.name, item.description, item.direction, item.format, ...item.skills]
           .join(" ")
           .toLowerCase()
           .includes(normalizedSearch);
-      const matchesDirection =
-        selectedDirection === labels.all ||
-        item.direction === selectedDirection;
-      const matchesType =
-        selectedType === labels.all || item.type === selectedType;
-
+      const matchesDirection = !selectedDirection || item.direction === selectedDirection;
+      const matchesType = !selectedType || item.type === selectedType;
       return matchesSearch && matchesDirection && matchesType;
     });
-  }, [data.propositions, labels.all, search, selectedDirection, selectedType]);
+  }, [data.propositions, search, selectedDirection, selectedType]);
+
+  const hasActiveFilters = !!(search || selectedDirection || selectedType);
 
   function resetFilters() {
     setSearch("");
-    setSelectedDirection(labels.all);
-    setSelectedType(labels.all);
+    setSelectedDirection("");
+    setSelectedType("");
   }
-
-  const inputClass =
-    "h-12 rounded-[12px] border border-white/10 bg-white/[0.04] px-4 text-[13px] text-white placeholder-white/30 outline-none transition focus:border-violet-500/50 focus:bg-white/[0.06]";
 
   return (
     <section className="py-12 sm:py-16 lg:py-20">
       <div className="container-v2">
-        <Reveal mode="up" amount={0.15} className="mb-10 grid gap-6 lg:mb-14 lg:grid-cols-[1fr_320px] lg:items-end">
+        <Reveal mode="up" delay={0.55} inView={false} className="mb-10 grid gap-6 lg:mb-14 lg:grid-cols-[1fr_320px] lg:items-end">
           <div>
             <div className="mb-3 text-[10px] font-bold uppercase tracking-[0.14em] text-violet-500">
               — {labels.sectionEyebrow}
@@ -370,60 +442,51 @@ function PropositionsSection({
           </div>
         </Reveal>
 
-        <div className="grad-border mb-8 grid gap-3 rounded-[20px] bg-white/[0.03] p-4 backdrop-blur-xl sm:grid-cols-2 sm:p-5 lg:grid-cols-[1.5fr_240px_200px_auto]">
-          <label className="flex flex-col gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/45">
-              {labels.search}
-            </span>
+        <div className="grad-border relative z-10 mb-8 rounded-[22px] bg-white/[0.03] p-5 backdrop-blur-xl">
+          {/* Search */}
+          <div className="relative mb-3">
+            <svg
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-white/25"
+              width="16" height="16" viewBox="0 0 16 16" fill="none"
+            >
+              <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M10 10l3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
             <input
               value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              onChange={(e) => setSearch(e.target.value)}
               placeholder={labels.searchPlaceholder}
-              className={inputClass}
+              className="h-12 w-full rounded-[14px] border border-white/[0.08] bg-white/[0.04] pl-11 pr-4 text-[14px] text-white placeholder-white/25 outline-none transition-all duration-200 focus:border-violet-500/40 focus:bg-white/[0.06]"
             />
-          </label>
+          </div>
 
-          <label className="flex flex-col gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/45">
-              {labels.direction}
-            </span>
-            <select
+          {/* Filter chips */}
+          <div className="flex flex-wrap items-center gap-2">
+            <FilterSelect
+              label={labels.direction}
               value={selectedDirection}
-              onChange={(event) => setSelectedDirection(event.target.value)}
-              className={inputClass}
-            >
-              {directions.map((direction) => (
-                <option key={direction} value={direction}>
-                  {direction}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <label className="flex flex-col gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/45">
-              {labels.type}
-            </span>
-            <select
+              options={directionOptions}
+              onChange={setSelectedDirection}
+            />
+            <FilterSelect
+              label={labels.type}
               value={selectedType}
-              onChange={(event) => setSelectedType(event.target.value)}
-              className={inputClass}
-            >
-              {types.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
-          </label>
-
-          <button
-            type="button"
-            onClick={resetFilters}
-            className="self-end rounded-[12px] border border-white/15 bg-white/[0.04] px-5 py-3 text-[12px] font-semibold text-white/70 backdrop-blur-md transition hover:bg-white/[0.10] hover:text-white sm:col-span-2 lg:col-span-1"
-          >
-            {labels.reset}
-          </button>
+              options={typeOptions}
+              onChange={setSelectedType}
+            />
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="ml-auto flex h-11 items-center gap-2 rounded-[12px] border border-white/[0.08] bg-white/[0.04] px-4 text-[12px] font-semibold text-white/50 transition-all duration-200 hover:border-red-500/30 hover:bg-red-500/[0.08] hover:text-red-300"
+              >
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                  <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+                {labels.reset}
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="flex flex-col gap-4">
@@ -455,7 +518,7 @@ function PropositionsSection({
 
 export function PartnersPage({ kind }: { kind: PartnersPageKind }) {
   const { t, i18n } = useTranslation("partners");
-  useLoadNamespace("partners", loadTranslations);
+  const loaded = useLoadNamespace("partners", loadTranslations);
 
   const labels = useMemo(
     () => ({
@@ -479,7 +542,7 @@ export function PartnersPage({ kind }: { kind: PartnersPageKind }) {
       noResultsTitle: t("common.noResultsTitle"),
       noResultsText: t("common.noResultsText"),
     }),
-    [t]
+    [t, loaded]
   );
 
   const data = useMemo(() => {
@@ -507,7 +570,9 @@ export function PartnersPage({ kind }: { kind: PartnersPageKind }) {
         };
       }),
     };
-  }, [kind, t]);
+  }, [kind, t, loaded]);
+
+  if (!loaded) return null;
 
   return (
     <PageTransition className="!pt-0 pb-0" isPaddingOn={false}>

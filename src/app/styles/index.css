@@ -219,7 +219,8 @@ html.lenis body {
   }
 
   .spec-card {
-    transition: all 240ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition: background 240ms cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow  240ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   .spec-card:hover {
     /* transform: translateY(-6px); */
@@ -233,6 +234,29 @@ html.lenis body {
   }
   .nav-link:hover {
     color: rgba(255, 255, 255, 0.9);
+  }
+
+  .footer-col-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 180ms, transform 180ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .footer-col-link::before {
+    content: "";
+    display: inline-block;
+    width: 0;
+    height: 1px;
+    background: #a684ff;
+    transition: width 200ms cubic-bezier(0.16, 1, 0.3, 1);
+    flex-shrink: 0;
+  }
+  .footer-col-link:hover {
+    color: rgba(255, 255, 255, 0.95);
+    transform: translateX(6px);
+  }
+  .footer-col-link:hover::before {
+    width: 12px;
   }
 }
 
@@ -371,6 +395,22 @@ html.lenis body {
   to   { transform: rotate(360deg); }
 }
 @utility animate-spin-slow { animation: spin-slow 30s linear infinite; }
+
+/* ── Infinite marquee ──────────────────────────────────────────────────── */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 24s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
 
 /* ── Gradient border flow (animated rim) ──────────────────────────────── */
 @keyframes grad-border-flow {

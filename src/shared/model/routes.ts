@@ -25,6 +25,7 @@ export const ROUTES = {
   CONTACTS: "/contacts",
   FAQ: "/faq",
   ASK_QUESTION: "/ask-question",
+  SEARCH: "/search",
   NOT_FOUND: "*",
 } as const;
 

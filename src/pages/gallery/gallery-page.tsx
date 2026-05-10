@@ -288,6 +288,7 @@ function HeroSection() {
           {GALLERY_YEARS.length} роки
         </StaggerItem>
       </Stagger>
+      <div aria-hidden className="pointer-events-none absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent to-[#08090f]" />
     </section>
   );
 }

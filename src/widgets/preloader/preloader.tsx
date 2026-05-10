@@ -1,14 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
+import { globalLenis } from "@/shared/hooks/use-lenis";
 
 const EASE: [number, number, number, number] = [0.16, 1, 0.3, 1];
+const MIN_NAV_MS = 350;
 
 export function Preloader() {
   const [pageLoaded, setPageLoaded] = useState(false);
   const [navVisible, setNavVisible] = useState(false);
-  const navigation = useNavigation();
-  const navTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const location = useLocation();
+  const isFirstNav = useRef(true);
 
   // Initial page load — hide after window.load fires
   useEffect(() => {
@@ -27,16 +29,23 @@ export function Preloader() {
     };
   }, []);
 
-  // Navigation preloader — small delay prevents flash on cached routes
+  // Show preloader on every client-side navigation and reset scroll
+  // immediately so the new page mounts with scroll=0 (prevents IO from
+  // firing at the previous page's scroll position before once:true disconnects)
   useEffect(() => {
-    clearTimeout(navTimerRef.current);
-    if (navigation.state === "loading") {
-      navTimerRef.current = setTimeout(() => setNavVisible(true), 120);
-    } else {
-      setNavVisible(false);
+    if (isFirstNav.current) {
+      isFirstNav.current = false;
+      return;
     }
-    return () => clearTimeout(navTimerRef.current);
-  }, [navigation.state]);
+    if (globalLenis) {
+      globalLenis.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo({ top: 0 });
+    }
+    setNavVisible(true);
+    const id = setTimeout(() => setNavVisible(false), MIN_NAV_MS);
+    return () => clearTimeout(id);
+  }, [location.pathname]);
 
   const visible = !pageLoaded || navVisible;
 
@@ -48,7 +57,7 @@ export function Preloader() {
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#08090f]"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1, ease: EASE }}
+          transition={{ duration: 0.4, ease: EASE }}
         >
           {/* Ambient glow */}
           <div

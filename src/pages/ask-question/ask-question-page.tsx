@@ -42,7 +42,7 @@ function HeroSection() {
         transition={{ duration: 16, ease: "easeInOut", repeat: Infinity }}
       />
 
-      <Stagger className="container-v2 relative z-[1] flex flex-col items-center text-center" stagger={0.1} inView={false}>
+      <Stagger className="container-v2 relative z-[1] flex flex-col items-center text-center" stagger={0.1} delay={0.35} inView={false}>
         <StaggerItem mode="scale">
           <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-violet-500/25 bg-violet-500/10 py-1.5 pl-2 pr-4 backdrop-blur-md">
             <span className="rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-2.5 py-0.5 text-[10px] font-bold tracking-[0.06em] text-white">
@@ -75,6 +75,7 @@ function HeroSection() {
           ми обов'язково відповімо протягом 24 годин.
         </StaggerItem>
       </Stagger>
+      <div aria-hidden className="pointer-events-none absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent to-[#08090f]" />
     </section>
   );
 }

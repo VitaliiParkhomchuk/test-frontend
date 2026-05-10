@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { Link } from "react-router-dom";
 import { ROUTES } from "@/shared/model/routes";
 import { DEPARTMENTS_DATA } from "@/shared/model/departments-data";
+import { logoMicrocircuitWhite } from "@/shared/icons";
 
 const NAV_COLS: { heading: string; links: { label: string; to: string }[] }[] = [
   {
@@ -46,58 +47,24 @@ export function Footer({ className }: { className?: string }) {
       <div className="container-v2">
         <div
           className="grid grid-cols-1 lg:grid-cols-[2.5fr_1fr_1fr_1fr]"
-          style={{ gap: 56, marginBottom: 56 }}
+          style={{ gap: "40px 56px", marginBottom: 48 }}
         >
-          {/* Brand column */}
-          <div>
+          {/* Brand column — spans full width on mobile */}
+          <div className="lg:col-span-1">
             <Link
               to={ROUTES.HOME}
               className="flex items-center"
-              style={{ gap: 12, marginBottom: 20 }}
+              style={{ gap: 10, marginBottom: 20 }}
             >
-              <div
-                className="flex items-center justify-center"
-                style={{
-                  width: 42,
-                  height: 42,
-                  borderRadius: 14,
-                  background: "linear-gradient(135deg, #a684ff, #51a2ff)",
-                  fontFamily: "'Manrope', sans-serif",
-                  fontWeight: 900,
-                  fontSize: 14,
-                  color: "#fff",
-                  boxShadow: "0 4px 20px rgba(166,132,255,0.35)",
-                }}
-              >
-                НУ
-              </div>
-              <div>
-                <div
-                  className="font-display"
-                  style={{
-                    fontWeight: 800,
-                    fontSize: 15,
-                    letterSpacing: "-0.02em",
-                  }}
-                >
-                  НУВГП
-                </div>
-                <div
-                  style={{
-                    fontSize: 10,
-                    color: "rgba(255,255,255,0.25)",
-                    letterSpacing: "0.06em",
-                    textTransform: "uppercase",
-                  }}
-                >
-                  Університет
-                </div>
-              </div>
+              <img src={logoMicrocircuitWhite} alt="ННКІТІ" style={{ width: 44, height: 44 }} />
+              <span className="text-xl font-bold leading-[18px] text-white">
+                ННІ<br />КІТІ
+              </span>
             </Link>
             <p
               style={{
                 fontSize: 13,
-                color: "rgba(255,255,255,0.3)",
+                color: "rgba(255,255,255,0.55)",
                 lineHeight: 1.7,
                 maxWidth: 300,
               }}
@@ -107,35 +74,58 @@ export function Footer({ className }: { className?: string }) {
             </p>
           </div>
 
-          {/* Nav columns */}
-          {NAV_COLS.map((col) => (
-            <div key={col.heading}>
-              <div
-                className="font-display"
-                style={{
-                  fontWeight: 700,
-                  fontSize: 11,
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  color: "rgba(255,255,255,0.35)",
-                  marginBottom: 20,
-                }}
-              >
-                {col.heading}
+          {/* Nav columns — 3-col grid on mobile/tablet, flat on lg+ via contents */}
+          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:contents">
+            {NAV_COLS.map((col) => (
+              <div key={col.heading}>
+                <div
+                  className="font-display"
+                  style={{
+                    fontWeight: 700,
+                    fontSize: 11,
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    color: "rgba(255,255,255,0.35)",
+                    marginBottom: 16,
+                  }}
+                >
+                  {col.heading}
+                </div>
+                <div className="flex flex-col" style={{ gap: 10 }}>
+                  {col.links.map((lk) => (
+                    <Link
+                      key={lk.label}
+                      to={lk.to}
+                      className="footer-col-link"
+                      style={{ fontSize: 13, color: "rgba(255,255,255,0.65)" }}
+                    >
+                      {lk.label}
+                    </Link>
+                  ))}
+                </div>
               </div>
-              <div className="flex flex-col" style={{ gap: 12 }}>
-                {col.links.map((lk) => (
-                  <Link
-                    key={lk.label}
-                    to={lk.to}
-                    className="nav-link"
-                    style={{ fontSize: 13, color: "rgba(255,255,255,0.25)" }}
-                  >
-                    {lk.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Horizontal nav row */}
+        <div className="mb-6 flex flex-wrap gap-x-6 gap-y-2">
+          {[
+            { label: "Про нас",      to: ROUTES.HISTORY },
+            { label: "Вступникам",   to: ROUTES.BACHELOR },
+            { label: "Кафедри",      to: `/department/${DEPARTMENTS_DATA[0].id}` },
+            { label: "Події",        to: ROUTES.EVENTS },
+            { label: "Партнери",     to: ROUTES.PARTNERS_BUSINESS },
+            { label: "Контакти",     to: ROUTES.CONTACTS },
+          ].map((lk) => (
+            <Link
+              key={lk.label}
+              to={lk.to}
+              className="nav-link text-[13px] font-medium"
+              style={{ color: "rgba(255,255,255,0.55)" }}
+            >
+              {lk.label}
+            </Link>
           ))}
         </div>
 
@@ -147,26 +137,10 @@ export function Footer({ className }: { className?: string }) {
           }}
         />
 
-        <div className="flex flex-col items-center justify-between sm:flex-row" style={{ gap: 8 }}>
-          <span style={{ fontSize: 12, color: "rgba(255,255,255,0.18)" }}>
+        <div className="text-center">
+          <span style={{ fontSize: 12, color: "rgba(255,255,255,0.45)" }}>
             © 2025 НУВГП. Усі права захищено.
           </span>
-          <div className="flex" style={{ gap: 24 }}>
-            <Link
-              to={ROUTES.HOME}
-              className="nav-link"
-              style={{ fontSize: 12, color: "rgba(255,255,255,0.18)" }}
-            >
-              Конфіденційність
-            </Link>
-            <Link
-              to={ROUTES.HOME}
-              className="nav-link"
-              style={{ fontSize: 12, color: "rgba(255,255,255,0.18)" }}
-            >
-              Умови
-            </Link>
-          </div>
         </div>
       </div>
     </footer>

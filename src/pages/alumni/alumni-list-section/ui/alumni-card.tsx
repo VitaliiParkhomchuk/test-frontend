@@ -3,6 +3,7 @@ import clsx from "clsx";
 import type { Alumni } from "../types";
 import { AlumniModal } from "./alumni-modal";
 import { getYear } from "../alumni-list-section";
+import { profilePlaceholder } from "@/shared/icons";
 
 interface AlumniCardProps {
   className?: string;
@@ -35,14 +36,9 @@ export function AlumniCard({ alumni, className }: AlumniCardProps) {
           <div className="grad-border flex-shrink-0 overflow-hidden rounded-full bg-[#111] p-[2px]">
             <img
               className="h-16 w-16 rounded-full object-cover"
-              src={
-                alumni.image ||
-                `https://i.pravatar.cc/200?img=${((alumni.full_name ?? "A").charCodeAt(0) % 67) + 1}`
-              }
+              src={alumni.image || profilePlaceholder}
               alt={alumni.full_name}
-              onError={(e) => {
-                e.currentTarget.src = `https://i.pravatar.cc/200?img=${((alumni.full_name ?? "A").charCodeAt(0) % 67) + 1}`;
-              }}
+              onError={(e) => { e.currentTarget.src = profilePlaceholder; }}
             />
           </div>
           <div className="min-w-0 flex-1">

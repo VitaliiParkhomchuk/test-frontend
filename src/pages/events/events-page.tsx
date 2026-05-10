@@ -6,10 +6,7 @@ import { Reveal, Stagger, StaggerItem } from "@/shared/ui";
 import {
   CALENDAR_EVENTS,
   NEWS,
-  ANNOUNCEMENTS,
-  ACTIVITY_CATEGORIES,
   EVENT_TYPE_META,
-  URGENCY_META,
   type CalendarEvent,
   type EventType,
 } from "./events-data";
@@ -51,8 +48,6 @@ function scrollToId(id: string) {
 const TABS = [
   { id: "calendar", label: "Календар" },
   { id: "news", label: "Новини" },
-  { id: "announcements", label: "Оголошення" },
-  { id: "activities", label: "Заходи" },
 ];
 
 function SectionTitle({
@@ -119,7 +114,7 @@ function Hero() {
         }}
       />
 
-      <Stagger className="container-v2 relative z-[1]" stagger={0.08} inView={false}>
+      <Stagger className="container-v2 relative z-[1]" stagger={0.08} delay={0.35} inView={false}>
         <StaggerItem mode="scale" className="mb-8 inline-flex items-center gap-2 rounded-full border border-violet-500/25 bg-violet-500/10 py-1.5 pl-2 pr-4 backdrop-blur-md">
           <span className="rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-2.5 py-0.5 text-[10px] font-bold tracking-[0.06em] text-white">
             ННКІТІ
@@ -168,6 +163,7 @@ function Hero() {
           ))}
         </StaggerItem>
       </Stagger>
+      <div aria-hidden className="pointer-events-none absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent to-[#08090f]" />
     </section>
   );
 }
@@ -448,7 +444,7 @@ function NewsCard({ item }: { item: (typeof NEWS)[0] }) {
   return (
     <Link
       to={`/news/${item.id}`}
-      className="spec-card grad-border group flex flex-col overflow-hidden rounded-[20px] bg-white/[0.03] backdrop-blur-xl"
+      className="spec-card grad-border group flex h-full flex-col overflow-hidden rounded-[20px] bg-white/[0.03] backdrop-blur-xl"
     >
       <div className="relative h-44 overflow-hidden">
         <img
@@ -490,151 +486,45 @@ function NewsCard({ item }: { item: (typeof NEWS)[0] }) {
 }
 
 function NewsSection() {
+  const [visibleCount, setVisibleCount] = useState(3);
+  const extra = NEWS.slice(3, visibleCount);
+
   return (
     <section id="news" className="scroll-mt-24 py-12 sm:py-16 lg:py-20">
       <div className="container-v2">
         <SectionTitle eyebrow="Новини" title="Останні" highlight="новини" />
         <Stagger className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" stagger={0.1} amount={0.05}>
-          {NEWS.map((item) => (
-            <StaggerItem key={item.id} mode="up">
+          {NEWS.slice(0, 3).map((item) => (
+            <StaggerItem key={item.id} mode="up" className="h-full">
               <NewsCard item={item} />
             </StaggerItem>
           ))}
         </Stagger>
-      </div>
-    </section>
-  );
-}
-
-function AnnouncementRow({ item }: { item: (typeof ANNOUNCEMENTS)[0] }) {
-  const [expanded, setExpanded] = useState(false);
-  const meta = URGENCY_META[item.urgency];
-
-  return (
-    <div
-      className={clsx(
-        "grad-border rounded-[16px] bg-white/[0.03] backdrop-blur-xl transition-colors",
-        expanded ? "bg-white/[0.05]" : "hover:bg-white/[0.05]"
-      )}
-    >
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="flex w-full items-start gap-4 p-4 text-left"
-      >
-        <span
-          className={clsx(
-            "font-display mt-0.5 flex-shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.04em]",
-            item.urgency === "high"
-              ? "bg-red-500/20 text-red-300"
-              : item.urgency === "medium"
-                ? "bg-violet-500/20 text-violet-200"
-                : "bg-white/10 text-white/55"
-          )}
-        >
-          {meta.label}
-        </span>
-        <div className="min-w-0 flex-1">
-          <p className="font-display text-[14px] font-semibold text-white">
-            {item.title}
-          </p>
-          <p className="text-[11px] text-white/40">{item.date}</p>
-        </div>
-        <span
-          className={clsx(
-            "flex-shrink-0 text-white/40 transition-transform duration-200",
-            expanded && "rotate-180"
-          )}
-        >
-          ∨
-        </span>
-      </button>
-
-      {expanded && (
-        <div className="border-t border-white/[0.06] px-4 pb-4 pt-3">
-          <p className="text-[13px] leading-relaxed text-white/60">{item.body}</p>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function AnnouncementsSection() {
-  return (
-    <section id="announcements" className="scroll-mt-24 py-12 sm:py-16 lg:py-20">
-      <div className="container-v2">
-        <SectionTitle
-          eyebrow="Оголошення"
-          title="Важлива"
-          highlight="інформація"
-          description="Натисни на оголошення, щоб розгорнути повний текст."
-        />
-        <Stagger className="grid gap-3 lg:grid-cols-2" stagger={0.06} amount={0.05}>
-          {ANNOUNCEMENTS.map((item) => (
-            <StaggerItem key={item.id} mode="up">
-              <AnnouncementRow item={item} />
-            </StaggerItem>
-          ))}
-        </Stagger>
-      </div>
-    </section>
-  );
-}
-
-function ActivityCard({ item }: { item: (typeof ACTIVITY_CATEGORIES)[0] }) {
-  const meta = EVENT_TYPE_META[item.type];
-
-  return (
-    <div className="spec-card grad-border group relative overflow-hidden rounded-[20px] bg-white/[0.03] backdrop-blur-xl">
-      <div className="relative h-36 overflow-hidden">
-        <img
-          src={item.imageSeed}
-          alt={meta.label}
-          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-500/30 to-blue-500/30 opacity-60" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#08090f] to-transparent" />
-
-        <div className="font-display absolute right-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-blue-500 text-[14px] font-extrabold text-white">
-          {item.count}
-        </div>
-      </div>
-
-      <div className="p-6">
-        <h3
-          className="font-display mb-2 font-bold text-white"
-          style={{ fontSize: "1.05rem", letterSpacing: "-0.01em" }}
-        >
-          {meta.label}
-        </h3>
-        <p className="mb-3 text-[12px] leading-relaxed text-white/55">
-          {item.description}
-        </p>
-        <div className="flex items-center gap-2 text-[11px] text-white/45">
-          <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-gradient-to-r from-violet-500 to-blue-500" />
-          Найближчий: {item.nextDate}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ActivitiesSection() {
-  return (
-    <section id="activities" className="scroll-mt-24 py-12 sm:py-16 lg:py-20">
-      <div className="container-v2">
-        <SectionTitle
-          eyebrow="Заходи"
-          title="Типи"
-          highlight="заходів"
-          description="Шість категорій подій — від наукових конференцій до спортивних турнірів між кафедрами."
-        />
-        <Stagger className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" stagger={0.1} amount={0.05}>
-          {ACTIVITY_CATEGORIES.map((item) => (
-            <StaggerItem key={item.type} mode="scale">
-              <ActivityCard item={item} />
-            </StaggerItem>
-          ))}
-        </Stagger>
+        {extra.length > 0 && (
+          <Stagger
+            key={visibleCount}
+            className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+            stagger={0.1}
+            inView={false}
+          >
+            {extra.map((item) => (
+              <StaggerItem key={item.id} mode="up" className="h-full">
+                <NewsCard item={item} />
+              </StaggerItem>
+            ))}
+          </Stagger>
+        )}
+        {visibleCount < NEWS.length && (
+          <div className="mt-10 flex justify-center">
+            <button
+              onClick={() => setVisibleCount((c) => c + 3)}
+              className="grad-border inline-flex items-center gap-2 rounded-[12px] bg-white/[0.04] px-7 py-3 text-[13px] font-semibold text-white/70 backdrop-blur-md transition-all duration-200 hover:bg-white/[0.10] hover:text-white"
+            >
+              Завантажити ще
+              <span aria-hidden className="text-violet-400">↓</span>
+            </button>
+          </div>
+        )}
       </div>
     </section>
   );
@@ -647,8 +537,6 @@ function EventsPage() {
       <div className="bg-[#08090f] pb-16 lg:pb-20">
         <CalendarSection />
         <NewsSection />
-        <AnnouncementsSection />
-        <ActivitiesSection />
       </div>
     </PageTransition>
   );

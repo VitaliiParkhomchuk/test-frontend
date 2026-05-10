@@ -60,7 +60,7 @@ export function EntrantHero({
 
       <div className="container-v2 relative z-[1]">
         <div className="grid items-center gap-10 lg:grid-cols-2">
-          <Stagger stagger={0.08} inView={false}>
+          <Stagger stagger={0.08} delay={0.35} inView={false}>
             <StaggerItem mode="scale" className="mb-8 inline-flex items-center gap-2 rounded-full border border-violet-500/25 bg-violet-500/10 py-1.5 pl-2 pr-4 backdrop-blur-md">
               <span className="rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-2.5 py-0.5 text-[10px] font-bold tracking-[0.06em] text-white">
                 ННКІТІ
@@ -107,7 +107,7 @@ export function EntrantHero({
             </StaggerItem>
           </Stagger>
 
-          <Reveal mode="right" inView={false} className="grad-border relative hidden overflow-hidden rounded-[20px] lg:block">
+          <Reveal mode="right" delay={0.35} inView={false} className="grad-border relative hidden overflow-hidden rounded-[20px] lg:block">
             <img
               src={imageSeed}
               alt=""
@@ -126,6 +126,7 @@ export function EntrantHero({
           </Reveal>
         </div>
       </div>
+      <div aria-hidden className="pointer-events-none absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent to-[#08090f]" />
     </section>
   );
 }
@@ -218,14 +219,14 @@ export function DateCard({
   index?: number;
 }) {
   return (
-    <div className="grad-border card-hover rounded-[18px] bg-white/[0.03] p-6 backdrop-blur-xl">
+    <div className="grad-border card-hover flex h-full flex-col rounded-[18px] bg-white/[0.03] p-6 backdrop-blur-xl">
       <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-violet-400">
         {date.period}
       </span>
       <p className="font-display mt-2 text-[14px] font-semibold text-white">
         {date.label}
       </p>
-      {date.note && <p className="mt-2 text-[11px] text-white/45">{date.note}</p>}
+      {date.note && <p className="mt-2 flex-1 text-[11px] text-white/45">{date.note}</p>}
       <div className="mt-5 h-px w-full bg-gradient-to-r from-violet-500/40 via-blue-500/20 to-transparent" />
     </div>
   );

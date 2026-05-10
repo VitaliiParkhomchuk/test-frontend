@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   motion,
   useInView,
@@ -84,16 +84,32 @@ export function Reveal({
   inView?: boolean;
 } & Omit<MotionProps, "variants"> &
   AnyProps) {
-  const MotionAs = motion(As as React.ElementType);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const MotionAs = useMemo(() => motion.create(As as React.ElementType), [As]);
+
+  const variants = useMemo(() => {
+    if (delay === 0) return revealVariants[mode];
+    const base = revealVariants[mode];
+    return {
+      hidden: base.hidden,
+      show: {
+        ...base.show,
+        transition: {
+          ...(base.show as { transition?: object }).transition,
+          delay,
+        },
+      },
+    } as Variants;
+  }, [mode, delay]);
+
   return (
     <MotionAs
       className={className}
-      variants={revealVariants[mode]}
+      variants={variants}
       initial="hidden"
       {...(inView
         ? { whileInView: "show", viewport: { once, amount } }
         : { animate: "show" })}
-      transition={{ delay }}
       {...rest}
     >
       {children}
@@ -123,7 +139,8 @@ export function Stagger({
   inView?: boolean;
 } & Omit<MotionProps, "variants"> &
   AnyProps) {
-  const MotionAs = motion(As as React.ElementType);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const MotionAs = useMemo(() => motion.create(As as React.ElementType), [As]);
   const variants: Variants = {
     hidden: {},
     show: {
@@ -159,7 +176,8 @@ export function StaggerItem({
   className?: string;
 } & Omit<MotionProps, "variants"> &
   AnyProps) {
-  const MotionAs = motion(As as React.ElementType);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const MotionAs = useMemo(() => motion.create(As as React.ElementType), [As]);
   return (
     <MotionAs className={className} variants={revealVariants[mode]} {...rest}>
       {children}

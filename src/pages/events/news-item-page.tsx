@@ -136,7 +136,7 @@ export function NewsItemPage() {
         <div className="container-v2 max-w-[860px]">
 
           {/* Cover image */}
-          <Reveal mode="up" className="-mt-6 mb-12">
+          <Reveal mode="up" delay={0.35} inView={false} className="-mt-6 mb-12">
             <div className="grad-border overflow-hidden rounded-[20px]">
               <img
                 src={news.imageSeed}
@@ -147,7 +147,7 @@ export function NewsItemPage() {
           </Reveal>
 
           {/* Lead excerpt */}
-          <Reveal mode="up">
+          <Reveal mode="up" delay={0.55} inView={false}>
             <p
               className="mb-10 border-l-2 border-violet-500/50 pl-5 text-[16px] leading-relaxed text-white/70 sm:text-[18px]"
               style={{ lineHeight: 1.75 }}

@@ -1,7 +1,8 @@
 import { PageTransition } from "@/widgets";
 import { Reveal, Stagger, StaggerItem } from "@/shared/ui";
+import { profilePlaceholder } from "@/shared/icons";
 
-const avatar = (img: number) => `https://i.pravatar.cc/400?img=${img}`;
+const avatar = (_img: number) => profilePlaceholder;
 
 interface Person {
   name: string;
@@ -127,7 +128,7 @@ function SectionHeading({
 
 function LeaderCard({ person }: { person: Person }) {
   return (
-    <div className="spec-card grad-border group relative flex flex-col overflow-hidden rounded-[20px] bg-white/[0.03] backdrop-blur-xl">
+    <div className="spec-card grad-border group relative flex h-full flex-col overflow-hidden rounded-[20px] bg-white/[0.03] backdrop-blur-xl">
       <div className="relative aspect-[4/3] overflow-hidden">
         <img
           src={avatar(person.img)}
@@ -302,7 +303,7 @@ function HeroSection() {
         }}
       />
 
-      <Stagger className="container-v2 relative z-[1] text-center" stagger={0.1} inView={false}>
+      <Stagger className="container-v2 relative z-[1] text-center" stagger={0.1} delay={0.35} inView={false}>
         <StaggerItem mode="scale" className="mb-8 inline-flex items-center gap-2 rounded-full border border-violet-500/25 bg-violet-500/10 py-1.5 pl-2 pr-4 backdrop-blur-md">
           <span className="rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-2.5 py-0.5 text-[10px] font-bold tracking-[0.06em] text-white">
             ННКІТІ
@@ -331,6 +332,7 @@ function HeroSection() {
           практиків галузі та молодих дослідників.
         </StaggerItem>
       </Stagger>
+      <div aria-hidden className="pointer-events-none absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent to-[#08090f]" />
     </section>
   );
 }
@@ -351,7 +353,7 @@ function TeamPage() {
             />
             <Stagger className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3" stagger={0.1} amount={0.1}>
               {LEADERSHIP.map((p) => (
-                <StaggerItem key={p.name} mode="up">
+                <StaggerItem key={p.name} mode="up" className="h-full">
                   <LeaderCard person={p} />
                 </StaggerItem>
               ))}

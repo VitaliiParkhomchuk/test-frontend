@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useLoadNamespace } from "@/shared/hooks";
 import { loadTranslations } from "./locales";
 import { useTranslation } from "react-i18next";
@@ -38,11 +40,65 @@ export function AlumniListSection({ className }: AlumniListSectionProps) {
   useLoadNamespace("alumni", loadTranslations);
   const { t } = useTranslation("alumni");
 
+  const inlineBarRef = useRef<HTMLDivElement>(null);
+  const [showFixed, setShowFixed] = useState(false);
+  const [hasScrolled, setHasScrolled] = useState(false);
+  const [footerVisible, setFooterVisible] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setHasScrolled(true);
+    window.addEventListener("scroll", onScroll, { once: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const el = inlineBarRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowFixed(!entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const footer = document.querySelector("footer");
+    if (!footer) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setFooterVisible(entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(footer);
+    return () => observer.disconnect();
+  }, []);
+
   const rawYears = publicRqClient.useQuery("get", "/core/alumni/years/").data;
   const rawAlumni = publicRqClient.useQuery("get", "/core/alumni/").data;
 
   const graduationYears = rawYears?.length ? rawYears : FALLBACK_YEARS;
   const alumniListData = rawAlumni?.length ? rawAlumni : FALLBACK_ALUMNI;
+
+  function scrollToYear(e: React.MouseEvent<HTMLAnchorElement>, year: number) {
+    e.preventDefault();
+    const target = document.getElementById(String(year));
+    if (target) {
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
+  const yearButtons = graduationYears.map((year, i) => (
+    <motion.a
+      key={i}
+      href={`#${year}`}
+      onClick={(e) => scrollToYear(e, year)}
+      whileHover={{ scale: 1.05, y: -2 }}
+      whileTap={{ scale: 0.97 }}
+      className="grad-border rounded-full bg-white/[0.03] px-5 py-2 text-[13px] font-bold text-white/70 transition-colors duration-200 hover:bg-white/[0.08] hover:text-white"
+    >
+      {year}
+    </motion.a>
+  ));
 
   return (
     <section className={clsx("py-12 sm:py-16 lg:py-24", className)}>
@@ -62,21 +118,25 @@ export function AlumniListSection({ className }: AlumniListSectionProps) {
           </h2>
         </Reveal>
 
-        <Reveal mode="fade" className="sticky top-16 z-10 -mx-4 mb-10 bg-[#08090f]/80 px-4 py-3 backdrop-blur-xl sm:top-20 sm:mx-0 sm:rounded-2xl sm:px-4 lg:mb-12">
-          <div className="flex flex-wrap justify-center gap-2">
-            {graduationYears.map((year, i) => (
-              <motion.a
-                key={i}
-                href={`#${year}`}
-                whileHover={{ scale: 1.05, y: -2 }}
-                whileTap={{ scale: 0.97 }}
-                className="grad-border rounded-full bg-white/[0.03] px-5 py-2 text-[13px] font-bold text-white/70 transition-colors duration-200 hover:bg-white/[0.08] hover:text-white"
-              >
-                {year}
-              </motion.a>
-            ))}
-          </div>
-        </Reveal>
+        {/* Inline year bar — visible in natural page flow */}
+        <div ref={inlineBarRef} className="mb-10 flex flex-wrap justify-center gap-2 lg:mb-12">
+          {yearButtons}
+        </div>
+
+        {/* Fixed bottom bar — portal escapes ancestor transform/will-change */}
+        {createPortal(
+          <div
+            className={clsx(
+              "fixed bottom-6 left-0 right-0 z-50 flex justify-center px-4 transition-all duration-300",
+              showFixed && hasScrolled && !footerVisible ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"
+            )}
+          >
+            <div className="flex flex-wrap justify-center gap-2 rounded-2xl border border-white/[0.08] bg-[#08090f]/90 px-4 py-3 shadow-[0_8px_40px_rgba(0,0,0,0.6)] backdrop-blur-xl">
+              {yearButtons}
+            </div>
+          </div>,
+          document.body
+        )}
 
         {graduationYears.map((year) => {
           const matchingAlumni = alumniListData.filter(

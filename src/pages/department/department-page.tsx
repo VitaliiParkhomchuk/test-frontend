@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useSearchParams } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { DEPARTMENTS_DATA, type DepartmentData } from "@/shared/model/departments-data";
-import { ROUTES } from "@/shared/model/routes";
 import clsx from "clsx";
 import { PageTransition } from "@/widgets";
 import { Reveal, Stagger, StaggerItem } from "@/shared/ui";
+import { profilePlaceholder } from "@/shared/icons";
 
-const avatar = (img: number) => `https://i.pravatar.cc/300?img=${img}`;
+const avatar = (_img: number) => profilePlaceholder;
 const DEPT_PHOTOS = [
   "/images/students-stage.jpg",
   "/images/students-lecture.jpg",
@@ -27,7 +27,6 @@ const cover = (seed: number) => DEPT_PHOTOS[seed % DEPT_PHOTOS.length];
 
 const sections = [
   { id: "overview",   label: "Про кафедру" },
-  { id: "programs",   label: "Освітні програми" },
   { id: "curriculum", label: "Навчальний план" },
   { id: "team",       label: "Команда" },
   { id: "history",    label: "Історія" },
@@ -156,7 +155,7 @@ function SectionTitle({
   highlight: string;
 }) {
   return (
-    <Reveal mode="up" className="mb-10">
+    <Reveal mode="up" className="mb-10 text-center">
       <div className="mb-3 text-[10px] font-bold uppercase tracking-[0.14em] text-violet-500">
         — {eyebrow}
       </div>
@@ -175,7 +174,8 @@ function OverviewSection({ dept }: { dept: DepartmentData }) {
   return (
     <section id="overview">
       <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
-        <div className="flex flex-col gap-6">
+        <Stagger className="flex flex-col gap-6" stagger={0.12} delay={0.35} inView={false}>
+          <StaggerItem mode="up">
           <div className="grad-border rounded-[20px] bg-white/[0.03] p-5 backdrop-blur-xl sm:p-7">
             <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.18em] text-violet-500">
               — Кафедра
@@ -208,7 +208,9 @@ function OverviewSection({ dept }: { dept: DepartmentData }) {
               </span>
             </div>
           </div>
+          </StaggerItem>
 
+          <StaggerItem mode="up">
           <div className="grad-border flex items-center gap-4 rounded-[18px] bg-white/[0.03] p-5 backdrop-blur-xl">
             <div className="grad-border flex-shrink-0 overflow-hidden rounded-full bg-[#111] p-[2px]">
               <img
@@ -244,9 +246,10 @@ function OverviewSection({ dept }: { dept: DepartmentData }) {
               </span>
             )}
           </div>
-        </div>
+          </StaggerItem>
+        </Stagger>
 
-        <div className="hidden lg:block">
+        <Reveal mode="fade" delay={0.55} inView={false} className="hidden lg:block">
           <div className="grad-border sticky top-28 overflow-hidden rounded-[20px]">
             <img
               src={cover(dept.coverSeed)}
@@ -260,67 +263,29 @@ function OverviewSection({ dept }: { dept: DepartmentData }) {
               </span>
             </div>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );
 }
 
-function ProgramsSection({ dept }: { dept: DepartmentData }) {
-  return (
-    <section id="programs" className="mt-fluid-xl">
-      <SectionTitle eyebrow="Навчання" title="Освітні" highlight="програми" />
-      <Stagger className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3" stagger={0.07} amount={0.05}>
-        {dept.programs.map((prog, i) => (
-          <StaggerItem key={prog.id} mode="up">
-          <Link
-            to={ROUTES.BACHELOR}
-            className="spec-card grad-border group relative flex flex-col overflow-hidden rounded-[20px] bg-white/[0.03] backdrop-blur-xl"
-          >
-            <div className="relative h-[140px] overflow-hidden">
-              <img
-                src={cover(dept.coverSeed + i + 1)}
-                alt={prog.name}
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#08090f]" />
-              <span
-                className="font-display absolute bottom-3 left-3 rounded-full px-3 py-1 text-[10px] font-bold uppercase tracking-[0.04em] text-white"
-                style={{
-                  background:
-                    "linear-gradient(135deg, rgba(166,132,255,0.85) 0%, rgba(81,162,255,0.85) 100%)",
-                }}
-              >
-                {prog.code}
-              </span>
-            </div>
-            <div className="p-5">
-              <h3
-                className="font-display font-bold text-white"
-                style={{ fontSize: "0.95rem", letterSpacing: "-0.01em" }}
-              >
-                {prog.name}
-              </h3>
-              <p className="mt-2 line-clamp-3 text-[12px] leading-relaxed text-white/55">
-                {prog.description}
-              </p>
-              <div className="mt-4 flex items-center gap-2 text-[12px] font-semibold text-violet-300">
-                Детальніше
-                <span aria-hidden className="transition-transform group-hover:translate-x-1">
-                  →
-                </span>
-              </div>
-            </div>
-          </Link>
-          </StaggerItem>
-        ))}
-      </Stagger>
-    </section>
-  );
-}
-
 function CurriculumSection({ dept }: { dept: DepartmentData }) {
-  const [activeIdx, setActiveIdx] = useState(0);
+  const [searchParams] = useSearchParams();
+  const programCode = searchParams.get("program");
+  const initialIdx = programCode
+    ? Math.max(0, dept.programs.findIndex((p) => p.code === programCode))
+    : 0;
+  const [activeIdx, setActiveIdx] = useState(initialIdx);
+
+  useEffect(() => {
+    if (!programCode) return;
+    const el = document.getElementById("curriculum");
+    if (!el) return;
+    const timeout = setTimeout(() => {
+      window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 88, behavior: "smooth" });
+    }, 400);
+    return () => clearTimeout(timeout);
+  }, [programCode]);
   const prog = dept.programs[activeIdx] ?? dept.programs[0];
 
   const years = [1, 2, 3, 4]
@@ -550,7 +515,8 @@ function ContactsSection({ dept }: { dept: DepartmentData }) {
     <section id="contacts" className="mt-fluid-xl">
       <SectionTitle eyebrow="Зв'язок" title="Контакти" highlight="кафедри" />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <Stagger className="grid grid-cols-1 gap-4 sm:grid-cols-2" stagger={0.1} amount={0.05}>
+        <StaggerItem mode="left">
         <a
           href={`mailto:${dept.email}`}
           className="grad-border card-hover flex items-center gap-4 rounded-[18px] bg-white/[0.03] p-5 backdrop-blur-xl"
@@ -565,6 +531,8 @@ function ContactsSection({ dept }: { dept: DepartmentData }) {
             <p className="mt-0.5 text-[13px] font-semibold text-white">{dept.email}</p>
           </div>
         </a>
+        </StaggerItem>
+        <StaggerItem mode="right">
         <div className="grad-border flex items-center gap-4 rounded-[18px] bg-white/[0.03] p-5 backdrop-blur-xl">
           <div className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-[12px] bg-gradient-to-br from-blue-500/20 to-violet-500/20 text-lg text-blue-300">
             ◎
@@ -576,9 +544,11 @@ function ContactsSection({ dept }: { dept: DepartmentData }) {
             <p className="mt-0.5 text-[13px] font-semibold text-white">{dept.address}</p>
           </div>
         </div>
-      </div>
+        </StaggerItem>
+      </Stagger>
 
-      <div className="grad-border mt-4 flex items-center gap-4 rounded-[18px] bg-gradient-to-br from-violet-500/[0.08] to-blue-500/[0.04] p-5 backdrop-blur-xl">
+      <Reveal mode="up" delay={0.15} className="mt-4">
+      <div className="grad-border flex items-center gap-4 rounded-[18px] bg-gradient-to-br from-violet-500/[0.08] to-blue-500/[0.04] p-5 backdrop-blur-xl">
         <div className="grad-border flex-shrink-0 overflow-hidden rounded-full bg-[#111] p-[2px]">
           <img
             src={avatar(head.img)}
@@ -604,6 +574,7 @@ function ContactsSection({ dept }: { dept: DepartmentData }) {
           )}
         </div>
       </div>
+      </Reveal>
     </section>
   );
 }
@@ -635,24 +606,28 @@ function DepartmentPage() {
         />
 
         <div className="container-v2 absolute inset-0 flex items-end pb-10">
-          <div>
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-violet-500/25 bg-violet-500/10 py-1.5 pl-2 pr-4 backdrop-blur-md">
-              <span className="rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-2.5 py-0.5 text-[10px] font-bold tracking-[0.06em] text-white">
-                ННКІТІ
-              </span>
-              <span className="text-[12px] text-white/70">Кафедра</span>
-            </div>
-            <h1
-              className="font-display font-black text-white"
-              style={{
-                fontSize: "clamp(2rem, 5vw, 4.5rem)",
-                letterSpacing: "-0.05em",
-                lineHeight: 0.95,
-              }}
-            >
-              {dept.name}
-            </h1>
-          </div>
+          <Stagger className="flex flex-col items-start" stagger={0.12} delay={0.35} inView={false}>
+            <StaggerItem mode="up">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-violet-500/25 bg-violet-500/10 py-1.5 pl-2 pr-4 backdrop-blur-md">
+                <span className="rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-2.5 py-0.5 text-[10px] font-bold tracking-[0.06em] text-white">
+                  ННКІТІ
+                </span>
+                <span className="text-[12px] text-white/70">Кафедра</span>
+              </div>
+            </StaggerItem>
+            <StaggerItem mode="up">
+              <h1
+                className="font-display font-black text-white"
+                style={{
+                  fontSize: "clamp(2rem, 5vw, 4.5rem)",
+                  letterSpacing: "-0.05em",
+                  lineHeight: 0.95,
+                }}
+              >
+                {dept.name}
+              </h1>
+            </StaggerItem>
+          </Stagger>
         </div>
       </div>
 
@@ -688,7 +663,6 @@ function DepartmentPage() {
             />
             <main className="min-w-0 flex-1">
               <OverviewSection dept={dept} />
-              <ProgramsSection dept={dept} />
               <CurriculumSection dept={dept} />
               <TeamSection dept={dept} />
               <HistorySection dept={dept} />

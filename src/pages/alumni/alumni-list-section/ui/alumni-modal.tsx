@@ -1,5 +1,6 @@
 import { ModalWrapper } from "@/widgets";
 import type { Alumni } from "../types";
+import { profilePlaceholder } from "@/shared/icons";
 
 interface AlumniModalProps {
   isOpen: boolean;
@@ -32,8 +33,9 @@ export function AlumniModal({ isOpen, toggleModal, alumni }: AlumniModalProps) {
           >
             <img
               className="h-28 w-28 rounded-[16px] object-cover sm:h-36 sm:w-36"
-              src={alumni.image}
+              src={alumni.image || profilePlaceholder}
               alt={alumni.full_name}
+              onError={(e) => { e.currentTarget.src = profilePlaceholder; }}
             />
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import clsx from "clsx";
@@ -20,6 +20,7 @@ type ScienceActivity = {
   id: number;
   title: string;
   description: string;
+  author: string;
   date: string;
   theme: string;
   location: string;
@@ -122,6 +123,9 @@ const NAV_ITEMS = [
 
 const STATUS_KEYS = ["open", "upcoming", "completed"];
 
+const MONTH_UA = ["Січень","Лютий","Березень","Квітень","Травень","Червень","Липень","Серпень","Вересень","Жовтень","Листопад","Грудень"];
+const DAY_UA = ["Нд","Пн","Вт","Ср","Чт","Пт","Сб"];
+
 function ScienceHero({
   data,
   currentKind,
@@ -158,7 +162,7 @@ function ScienceHero({
         }}
       />
 
-      <Stagger className="container-v2 relative z-[1]" stagger={0.08} inView={false}>
+      <Stagger className="container-v2 relative z-[1]" stagger={0.08} delay={0.35} inView={false}>
         <StaggerItem mode="scale" className="mb-8 inline-flex items-center gap-2 rounded-full border border-violet-500/25 bg-violet-500/10 py-1.5 pl-2 pr-4 backdrop-blur-md">
           <span className="rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-2.5 py-0.5 text-[10px] font-bold tracking-[0.06em] text-white">
             ННКІТІ
@@ -204,102 +208,307 @@ function ScienceHero({
           ))}
         </StaggerItem>
       </Stagger>
+      <div aria-hidden className="pointer-events-none absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-b from-transparent to-[#08090f]" />
     </section>
   );
 }
 
 function ActivityCard({
   activity,
-  labels,
   dateLocale,
 }: {
   activity: ScienceActivity;
-  labels: ScienceLabels;
   dateLocale: string;
 }) {
   const formattedDate = new Intl.DateTimeFormat(dateLocale, {
-    day: "2-digit",
+    day: "numeric",
     month: "short",
     year: "numeric",
   }).format(new Date(`${activity.date}T12:00:00`));
 
-  const statusClasses =
-    activity.status === "open"
-      ? "border-violet-500/30 bg-violet-500/15 text-violet-200"
-      : activity.status === "upcoming"
-        ? "border-blue-500/30 bg-blue-500/15 text-blue-200"
-        : "border-white/10 bg-white/5 text-white/55";
-
   return (
-    <article className="grad-border card-hover relative grid gap-5 overflow-hidden rounded-[20px] bg-white/[0.03] p-6 backdrop-blur-xl lg:grid-cols-[160px_1fr_auto] lg:p-7">
+    <article className="grad-border card-hover group relative overflow-hidden rounded-[20px] bg-white/[0.03] p-6 backdrop-blur-xl sm:p-8">
       <div
         aria-hidden
-        className="pointer-events-none absolute -right-12 -top-12 h-44 w-44 rounded-full opacity-50 blur-3xl"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(166,132,255,0.20) 0%, transparent 70%)",
-        }}
+        className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full opacity-30 blur-3xl transition-opacity duration-500 group-hover:opacity-50"
+        style={{ background: "radial-gradient(circle, rgba(166,132,255,0.30) 0%, transparent 70%)" }}
       />
 
-      <div className="grad-border relative flex flex-col justify-between rounded-[14px] bg-gradient-to-br from-violet-500/[0.10] to-blue-500/[0.06] p-4">
-        <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/45">
-          {labels.date}
-        </span>
-        <span className="text-grad font-display mt-3 text-[18px] font-extrabold leading-tight">
-          {formattedDate}
-        </span>
+      {/* Author + date */}
+      <div className="mb-3 flex items-center gap-2 text-[12px] text-white/35">
+        <span className="font-medium">{activity.author}</span>
+        <span className="text-white/15">·</span>
+        <span>{formattedDate}</span>
       </div>
 
-      <div className="relative min-w-0">
-        <div className="mb-3 flex flex-wrap items-center gap-2">
-          <span
-            className={clsx(
-              "font-display rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-[0.04em]",
-              statusClasses
-            )}
-          >
-            {activity.statusLabel}
-          </span>
-          <span className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] font-semibold text-white/55">
-            {activity.theme}
-          </span>
+      {/* Title */}
+      <h3
+        className="font-display mb-2 font-bold text-white"
+        style={{ fontSize: "clamp(1.05rem, 1.5vw, 1.25rem)", letterSpacing: "-0.025em", lineHeight: 1.3 }}
+      >
+        {activity.title}
+      </h3>
+
+      {/* Subtitle */}
+      <p className="text-[13px] leading-relaxed text-white/45 sm:text-[14px]">
+        {activity.description}
+      </p>
+    </article>
+  );
+}
+
+type SelectOption = { value: string; label: string };
+
+function FilterSelect({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: SelectOption[];
+  onChange: (v: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function onPointerDown(e: PointerEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, []);
+
+  const selected = options.find((o) => o.value === value);
+  const isFiltered = value !== "";
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className={clsx(
+          "flex h-11 items-center gap-2 rounded-[12px] border px-4 text-[13px] font-medium transition-all duration-200",
+          open
+            ? "border-violet-500/40 bg-violet-500/[0.12] text-white"
+            : isFiltered
+              ? "border-violet-500/30 bg-violet-500/[0.08] text-violet-200"
+              : "border-white/[0.08] bg-white/[0.04] text-white/55 hover:border-white/15 hover:text-white"
+        )}
+      >
+        <span className="max-w-[140px] truncate">{isFiltered ? selected?.label : label}</span>
+        <svg
+          width="10" height="6" viewBox="0 0 10 6" fill="none"
+          className={clsx("flex-shrink-0 transition-transform duration-200", open ? "rotate-180 text-violet-400" : "text-white/30")}
+        >
+          <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+
+      <div
+        className={clsx(
+          "absolute top-[calc(100%+6px)] left-0 z-[100] min-w-[200px] overflow-hidden rounded-[14px] border border-white/[0.07] shadow-[0_24px_56px_rgba(0,0,0,0.9)] transition-all duration-150 origin-top-left",
+          open ? "scale-100 opacity-100" : "pointer-events-none scale-95 opacity-0"
+        )}
+        style={{ backgroundColor: "#0f1019", backdropFilter: "none" }}
+      >
+        <div className="h-px bg-gradient-to-r from-violet-500/50 via-blue-500/25 to-transparent" />
+        <div className="flex flex-col p-1.5">
+          {options.map((option) => {
+            const isSelected = value === option.value;
+            return (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => { onChange(option.value); setOpen(false); }}
+                className={clsx(
+                  "flex w-full items-center gap-2.5 rounded-[10px] px-3 py-2.5 text-left text-[13px] transition-colors duration-100",
+                  isSelected
+                    ? "bg-violet-500/[0.14] text-white"
+                    : "text-white/50 hover:bg-white/[0.05] hover:text-white"
+                )}
+              >
+                <span className={clsx("w-3.5 flex-shrink-0 text-[11px] font-bold leading-none", isSelected ? "text-violet-400" : "text-transparent")}>✓</span>
+                <span className={clsx("truncate", isSelected && "font-semibold")}>{option.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CalendarPopover({
+  placeholder,
+  value,
+  onChange,
+  fromDate,
+  toDate,
+}: {
+  placeholder: string;
+  value: string;
+  onChange: (v: string) => void;
+  fromDate: string;
+  toDate: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+  const init = value ? new Date(value + "T12:00:00") : today;
+  const [viewYear, setViewYear] = useState(init.getFullYear());
+  const [viewMonth, setViewMonth] = useState(init.getMonth());
+
+  useEffect(() => {
+    if (open && value) {
+      const d = new Date(value + "T12:00:00");
+      setViewYear(d.getFullYear());
+      setViewMonth(d.getMonth());
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    function onPD(e: PointerEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("pointerdown", onPD);
+    return () => document.removeEventListener("pointerdown", onPD);
+  }, [open]);
+
+  function toStr(y: number, m: number, d: number) {
+    return `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+  }
+  function prevMonth() {
+    if (viewMonth === 0) { setViewMonth(11); setViewYear((y) => y - 1); }
+    else setViewMonth((m) => m - 1);
+  }
+  function nextMonth() {
+    if (viewMonth === 11) { setViewMonth(0); setViewYear((y) => y + 1); }
+    else setViewMonth((m) => m + 1);
+  }
+
+  const firstDow = new Date(viewYear, viewMonth, 1).getDay();
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+  const cells: (number | null)[] = [
+    ...Array(firstDow).fill(null),
+    ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
+  ];
+  while (cells.length % 7 !== 0) cells.push(null);
+
+  const displayText = value
+    ? new Intl.DateTimeFormat("uk-UA", { day: "numeric", month: "short" }).format(new Date(value + "T12:00:00"))
+    : placeholder;
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className={clsx(
+          "flex h-11 items-center gap-2 rounded-[12px] border px-4 text-[13px] font-medium transition-all duration-200",
+          open
+            ? "border-violet-500/40 bg-violet-500/[0.12] text-white"
+            : value
+              ? "border-violet-500/30 bg-violet-500/[0.08] text-violet-200"
+              : "border-white/[0.08] bg-white/[0.04] text-white/55 hover:border-white/15 hover:text-white"
+        )}
+      >
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" className="flex-shrink-0 opacity-50">
+          <rect x="1" y="2.5" width="10" height="8.5" rx="1.5" stroke="currentColor" strokeWidth="1.3" />
+          <path d="M1 6h10" stroke="currentColor" strokeWidth="1.3" />
+          <path d="M4 1v3M8 1v3" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+        </svg>
+        <span className="min-w-[44px] text-center">{displayText}</span>
+        <svg
+          width="10" height="6" viewBox="0 0 10 6" fill="none"
+          className={clsx("flex-shrink-0 transition-transform duration-200", open ? "rotate-180 text-violet-400" : "text-white/30")}
+        >
+          <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
+
+      <div
+        className={clsx(
+          "absolute top-[calc(100%+6px)] left-0 z-[200] w-[264px] overflow-hidden rounded-[18px] border border-white/[0.08] shadow-[0_32px_64px_rgba(0,0,0,0.95)] transition-all duration-150 origin-top-left",
+          open ? "scale-100 opacity-100" : "pointer-events-none scale-95 opacity-0"
+        )}
+        style={{ backgroundColor: "#0c0d15", backdropFilter: "none" }}
+      >
+        <div className="h-px bg-gradient-to-r from-violet-500/60 via-blue-500/30 to-transparent" />
+
+        <div className="flex items-center justify-between px-3 pt-3 pb-2">
+          <button type="button" onClick={prevMonth} className="flex h-7 w-7 items-center justify-center rounded-[8px] text-white/35 transition-colors hover:bg-white/[0.08] hover:text-white/80">
+            <svg width="6" height="10" viewBox="0 0 6 10" fill="none">
+              <path d="M5 1L1 5l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
+          <span className="text-[13px] font-bold text-white/80">{MONTH_UA[viewMonth]} {viewYear}</span>
+          <button type="button" onClick={nextMonth} className="flex h-7 w-7 items-center justify-center rounded-[8px] text-white/35 transition-colors hover:bg-white/[0.08] hover:text-white/80">
+            <svg width="6" height="10" viewBox="0 0 6 10" fill="none">
+              <path d="M1 1l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
         </div>
 
-        <h3
-          className="font-display font-bold text-white"
-          style={{ fontSize: "1.15rem", letterSpacing: "-0.02em" }}
-        >
-          {activity.title}
-        </h3>
-        <p className="mt-3 text-[13px] leading-relaxed text-white/55">
-          {activity.description}
-        </p>
-
-        <div className="mt-4 flex flex-wrap gap-1.5">
-          {activity.tags.map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full bg-white/[0.05] px-2.5 py-1 text-[10px] text-white/55"
-            >
-              {tag}
-            </span>
+        <div className="grid grid-cols-7 px-2.5 pb-1">
+          {DAY_UA.map((d) => (
+            <div key={d} className="flex items-center justify-center py-1 text-[10px] font-bold uppercase tracking-wider text-white/20">
+              {d}
+            </div>
           ))}
         </div>
-      </div>
 
-      <div className="relative flex min-w-[180px] flex-col justify-center gap-2 border-t border-white/[0.06] pt-4 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
-        <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/35">
-          {labels.location}
-        </p>
-        <p className="text-[13px] font-semibold text-white">
-          {activity.location}
-        </p>
-        <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.18em] text-white/35">
-          {labels.organizer}
-        </p>
-        <p className="text-[12px] text-white/55">{activity.organizer}</p>
+        <div className="grid grid-cols-7 gap-px px-2.5 pb-2">
+          {cells.map((day, i) => {
+            if (!day) return <div key={i} className="aspect-square" />;
+            const dayStr = toStr(viewYear, viewMonth, day);
+            const isSelected = value === dayStr;
+            const isToday = todayStr === dayStr;
+            const inRange = !!(fromDate && toDate && dayStr > fromDate && dayStr < toDate);
+            return (
+              <button
+                key={i}
+                type="button"
+                onClick={() => { onChange(dayStr); setOpen(false); }}
+                className={clsx(
+                  "flex aspect-square items-center justify-center rounded-[8px] text-[13px] font-medium transition-colors duration-100",
+                  isSelected
+                    ? "bg-gradient-to-br from-violet-500 to-blue-500 font-bold text-white shadow-[0_2px_10px_rgba(139,92,246,0.5)]"
+                    : inRange
+                      ? "bg-violet-500/[0.15] text-violet-200 hover:bg-violet-500/[0.25]"
+                      : "text-white/60 hover:bg-white/[0.08] hover:text-white",
+                  isToday && !isSelected && "ring-1 ring-inset ring-violet-500/50 text-white/90"
+                )}
+              >
+                {day}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="flex items-center justify-between border-t border-white/[0.06] px-4 py-2.5">
+          <button
+            type="button"
+            onClick={() => { onChange(""); setOpen(false); }}
+            className="text-[12px] text-white/30 transition-colors hover:text-white/60"
+          >
+            Очистити
+          </button>
+          <button
+            type="button"
+            onClick={() => { onChange(todayStr); setViewYear(today.getFullYear()); setViewMonth(today.getMonth()); setOpen(false); }}
+            className="text-[12px] font-semibold text-violet-400 transition-colors hover:text-violet-300"
+          >
+            Сьогодні
+          </button>
+        </div>
       </div>
-    </article>
+    </div>
   );
 }
 
@@ -313,24 +522,25 @@ function ActivitiesSection({
   dateLocale: string;
 }) {
   const [search, setSearch] = useState("");
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedTheme, setSelectedTheme] = useState(labels.all);
-  const [selectedStatus, setSelectedStatus] = useState(labels.all);
+  const [selectedDateFrom, setSelectedDateFrom] = useState("");
+  const [selectedDateTo, setSelectedDateTo] = useState("");
+  const [selectedTheme, setSelectedTheme] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
 
-  const themes = useMemo(
+  const themeOptions = useMemo<SelectOption[]>(
     () => [
-      labels.all,
-      ...Array.from(new Set(data.activities.map((a) => a.theme))),
+      { value: "", label: labels.all },
+      ...Array.from(new Set(data.activities.map((a) => a.theme))).map((t) => ({ value: t, label: t })),
     ],
     [data.activities, labels.all]
   );
 
-  const statuses = useMemo(
+  const statusOptions = useMemo<SelectOption[]>(
     () => [
-      labels.all,
-      ...STATUS_KEYS.map((status) => ({
-        value: status,
-        label: labelsByStatus(status, data.activities),
+      { value: "", label: labels.all },
+      ...STATUS_KEYS.map((s) => ({
+        value: s,
+        label: labelsByStatus(s, data.activities),
       })),
     ],
     [data.activities, labels.all]
@@ -338,156 +548,115 @@ function ActivitiesSection({
 
   const filteredActivities = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
-
     return data.activities.filter((activity) => {
       const matchesSearch =
-        normalizedSearch.length === 0 ||
-        [
-          activity.title,
-          activity.description,
-          activity.theme,
-          activity.location,
-          activity.organizer,
-          activity.statusLabel,
-          ...activity.tags,
-        ]
+        !normalizedSearch ||
+        [activity.title, activity.description, activity.theme, activity.location, activity.organizer, activity.statusLabel, ...activity.tags]
           .join(" ")
           .toLowerCase()
           .includes(normalizedSearch);
-
       const matchesDate =
-        selectedDate.length === 0 || activity.date === selectedDate;
-      const matchesTheme =
-        selectedTheme === labels.all || activity.theme === selectedTheme;
-      const matchesStatus =
-        selectedStatus === labels.all || activity.status === selectedStatus;
-
+        (!selectedDateFrom || activity.date >= selectedDateFrom) &&
+        (!selectedDateTo || activity.date <= selectedDateTo);
+      const matchesTheme = !selectedTheme || activity.theme === selectedTheme;
+      const matchesStatus = !selectedStatus || activity.status === selectedStatus;
       return matchesSearch && matchesDate && matchesTheme && matchesStatus;
     });
-  }, [
-    data.activities,
-    labels.all,
-    search,
-    selectedDate,
-    selectedStatus,
-    selectedTheme,
-  ]);
+  }, [data.activities, search, selectedDateFrom, selectedDateTo, selectedTheme, selectedStatus]);
+
+  const hasActiveFilters = !!(search || selectedDateFrom || selectedDateTo || selectedTheme || selectedStatus);
 
   function resetFilters() {
     setSearch("");
-    setSelectedDate("");
-    setSelectedTheme(labels.all);
-    setSelectedStatus(labels.all);
+    setSelectedDateFrom("");
+    setSelectedDateTo("");
+    setSelectedTheme("");
+    setSelectedStatus("");
   }
-
-  const inputClass =
-    "h-12 rounded-[12px] border border-white/10 bg-white/[0.04] px-4 text-[13px] text-white placeholder-white/30 outline-none transition focus:border-violet-500/50 focus:bg-white/[0.06]";
 
   return (
     <section className="py-12 sm:py-16 lg:py-20">
       <div className="container-v2">
-        <Reveal mode="up" amount={0.15} className="mb-10 grid gap-6 lg:grid-cols-[1fr_320px] lg:items-end lg:mb-14">
-          <div>
-            <div className="mb-3 text-[10px] font-bold uppercase tracking-[0.14em] text-violet-500">
-              — {labels.activities}
-            </div>
-            <h2
-              className="font-display font-black text-white"
-              style={{
-                fontSize: "clamp(1.8rem, 3.5vw, 3rem)",
-                letterSpacing: "-0.04em",
-              }}
-            >
-              {data.activitiesTitle}
-            </h2>
-            <p className="mt-4 max-w-xl text-[14px] leading-relaxed text-white/55 sm:text-[15px]">
-              {data.activitiesIntro}
-            </p>
+        <Reveal mode="up" delay={0.55} inView={false} className="mb-10 lg:mb-14">
+          <div className="mb-3 text-[10px] font-bold uppercase tracking-[0.14em] text-violet-500">
+            — {labels.activities}
           </div>
-
-          <div className="grad-border rounded-[18px] bg-white/[0.03] p-5 backdrop-blur-xl">
-            <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-white/40">
-              {labels.results}
-            </p>
-            <p className="font-display mt-2 text-[28px] font-extrabold">
-              <span className="text-grad">{filteredActivities.length}</span>
-              <span className="text-[14px] text-white/35">
-                {" "}
-                / {data.activities.length}
-              </span>
-            </p>
-          </div>
+          <h2
+            className="font-display font-black text-white"
+            style={{
+              fontSize: "clamp(1.8rem, 3.5vw, 3rem)",
+              letterSpacing: "-0.04em",
+            }}
+          >
+            {data.activitiesTitle}
+          </h2>
+          <p className="mt-4 max-w-xl text-[14px] leading-relaxed text-white/55 sm:text-[15px]">
+            {data.activitiesIntro}
+          </p>
         </Reveal>
 
-        <div className="grad-border mb-8 grid gap-3 rounded-[20px] bg-white/[0.03] p-4 backdrop-blur-xl sm:grid-cols-2 sm:p-5 xl:grid-cols-[1.5fr_220px_220px_180px_auto]">
-          <label className="flex flex-col gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/45">
-              {labels.search}
-            </span>
+        <div className="grad-border relative z-10 mb-8 rounded-[22px] bg-white/[0.03] p-5 backdrop-blur-xl">
+          {/* Search */}
+          <div className="relative mb-3">
+            <svg
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-white/25"
+              width="16" height="16" viewBox="0 0 16 16" fill="none"
+            >
+              <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M10 10l3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
             <input
               value={search}
-              onChange={(event) => setSearch(event.target.value)}
+              onChange={(e) => setSearch(e.target.value)}
               placeholder={labels.searchPlaceholder}
-              className={inputClass}
+              className="h-12 w-full rounded-[14px] border border-white/[0.08] bg-white/[0.04] pl-11 pr-4 text-[14px] text-white placeholder-white/25 outline-none transition-all duration-200 focus:border-violet-500/40 focus:bg-white/[0.06]"
             />
-          </label>
+          </div>
 
-          <label className="flex flex-col gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/45">
-              {labels.date}
-            </span>
-            <input
-              type="date"
-              value={selectedDate}
-              onChange={(event) => setSelectedDate(event.target.value)}
-              className={inputClass}
+          {/* Filter chips */}
+          <div className="flex flex-wrap items-center gap-2">
+            <CalendarPopover
+              placeholder="від"
+              value={selectedDateFrom}
+              onChange={setSelectedDateFrom}
+              fromDate={selectedDateFrom}
+              toDate={selectedDateTo}
             />
-          </label>
+            <CalendarPopover
+              placeholder="до"
+              value={selectedDateTo}
+              onChange={setSelectedDateTo}
+              fromDate={selectedDateFrom}
+              toDate={selectedDateTo}
+            />
 
-          <label className="flex flex-col gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/45">
-              {labels.theme}
-            </span>
-            <select
+            <FilterSelect
+              label={labels.theme}
               value={selectedTheme}
-              onChange={(event) => setSelectedTheme(event.target.value)}
-              className={inputClass}
-            >
-              {themes.map((theme) => (
-                <option key={theme} value={theme}>
-                  {theme}
-                </option>
-              ))}
-            </select>
-          </label>
+              options={themeOptions}
+              onChange={setSelectedTheme}
+            />
 
-          <label className="flex flex-col gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/45">
-              {labels.status}
-            </span>
-            <select
+            <FilterSelect
+              label={labels.status}
               value={selectedStatus}
-              onChange={(event) => setSelectedStatus(event.target.value)}
-              className={inputClass}
-            >
-              {statuses.map((status) => (
-                <option
-                  key={typeof status === "string" ? status : status.value}
-                  value={typeof status === "string" ? status : status.value}
-                >
-                  {typeof status === "string" ? status : status.label}
-                </option>
-              ))}
-            </select>
-          </label>
+              options={statusOptions}
+              onChange={setSelectedStatus}
+            />
 
-          <button
-            type="button"
-            onClick={resetFilters}
-            className="self-end rounded-[12px] border border-white/15 bg-white/[0.04] px-5 py-3 text-[12px] font-semibold text-white/70 backdrop-blur-md transition hover:bg-white/[0.10] hover:text-white sm:col-span-2 xl:col-span-1"
-          >
-            {labels.reset}
-          </button>
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={resetFilters}
+                className="ml-auto flex h-11 items-center gap-2 rounded-[12px] border border-white/[0.08] bg-white/[0.04] px-4 text-[12px] font-semibold text-white/50 transition-all duration-200 hover:border-red-500/30 hover:bg-red-500/[0.08] hover:text-red-300"
+              >
+                <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                  <path d="M1 1l8 8M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                </svg>
+                {labels.reset}
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="flex flex-col gap-4">
@@ -496,7 +665,6 @@ function ActivitiesSection({
               <Reveal key={activity.id} mode="up" amount={0.15}>
                 <ActivityCard
                   activity={activity}
-                  labels={labels}
                   dateLocale={dateLocale}
                 />
               </Reveal>
@@ -526,7 +694,7 @@ function labelsByStatus(status: string, activities: ScienceActivity[]) {
 
 export function SciencePage({ kind }: { kind: SciencePageKind }) {
   const { t, i18n } = useTranslation("science");
-  useLoadNamespace("science", loadTranslations);
+  const loaded = useLoadNamespace("science", loadTranslations);
 
   const labels = useMemo(
     () => ({
@@ -548,7 +716,7 @@ export function SciencePage({ kind }: { kind: SciencePageKind }) {
       noResultsTitle: t("common.noResultsTitle"),
       noResultsText: t("common.noResultsText"),
     }),
-    [t]
+    [t, loaded]
   );
 
   const data = useMemo(() => {
@@ -569,6 +737,7 @@ export function SciencePage({ kind }: { kind: SciencePageKind }) {
           id: index + 1,
           title: t(`${itemKey}.title`),
           description: t(`${itemKey}.description`),
+          author: t(`${itemKey}.author`),
           theme: t(`${itemKey}.theme`),
           location: t(`${itemKey}.location`),
           organizer: t(`${itemKey}.organizer`),
@@ -579,7 +748,9 @@ export function SciencePage({ kind }: { kind: SciencePageKind }) {
         };
       }),
     };
-  }, [kind, t]);
+  }, [kind, t, loaded]);
+
+  if (!loaded) return null;
 
   return (
     <PageTransition className="!pt-0 pb-0" isPaddingOn={false}>

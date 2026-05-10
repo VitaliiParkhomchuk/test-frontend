@@ -13,6 +13,7 @@ import "swiper/css/autoplay";
 const SPECIALTIES = [
   {
     code: "121",
+    departmentId: 4,
     name: "Інженерія програмного забезпечення",
     tags: ["Backend", "Frontend", "AI", "DevOps"],
     budget: 20,
@@ -20,6 +21,7 @@ const SPECIALTIES = [
   },
   {
     code: "122",
+    departmentId: 2,
     name: "Комп'ютерні науки",
     tags: ["Algorithms", "ML", "Networks"],
     budget: 15,
@@ -27,6 +29,7 @@ const SPECIALTIES = [
   },
   {
     code: "126",
+    departmentId: 2,
     name: "Інформаційні системи",
     tags: ["ERP", "Cloud", "BI"],
     budget: 18,
@@ -34,6 +37,7 @@ const SPECIALTIES = [
   },
   {
     code: "192",
+    departmentId: null,
     name: "Будівництво та цив. інженерія",
     tags: ["BIM", "Hydro", "Design"],
     budget: 25,
@@ -41,6 +45,7 @@ const SPECIALTIES = [
   },
   {
     code: "193",
+    departmentId: null,
     name: "Геодезія та землеустрій",
     tags: ["GIS", "Remote Sensing"],
     budget: 12,
@@ -48,6 +53,7 @@ const SPECIALTIES = [
   },
   {
     code: "101",
+    departmentId: null,
     name: "Екологія",
     tags: ["Water", "Environment", "Policy"],
     budget: 16,
@@ -99,9 +105,12 @@ function NavButton({
 
 function SpecCard({ spec }: { spec: (typeof SPECIALTIES)[0] }) {
   const [h, setH] = useState(false);
+  const to = spec.departmentId
+    ? `/department/${spec.departmentId}?program=${spec.code}#curriculum`
+    : ROUTES.BACHELOR;
   return (
     <Link
-      to={ROUTES.BACHELOR}
+      to={to}
       onMouseEnter={() => setH(true)}
       onMouseLeave={() => setH(false)}
       className="spec-card grad-border flex h-full cursor-pointer flex-col rounded-2xl px-6 py-6 sm:rounded-[20px] sm:px-7 sm:py-7"
@@ -132,8 +141,13 @@ function SpecCard({ spec }: { spec: (typeof SPECIALTIES)[0] }) {
         style={{
           fontSize: "clamp(1.15rem, 1.4vw, 1.4rem)",
           letterSpacing: "-0.01em",
-          lineHeight: 1.15,
+          lineHeight: 1.2,
           marginBottom: 22,
+          minHeight: "2.4em",
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden",
           color: h ? "#fff" : "rgba(255,255,255,0.92)",
           transition: "color 200ms",
         }}
@@ -141,7 +155,7 @@ function SpecCard({ spec }: { spec: (typeof SPECIALTIES)[0] }) {
         {spec.name}
       </h3>
 
-      <div className="mb-6 flex flex-wrap gap-1.5">
+      <div className="mb-6 flex flex-wrap gap-2">
         {spec.tags.map((t) => (
           <span
             key={t}
@@ -150,7 +164,7 @@ function SpecCard({ spec }: { spec: (typeof SPECIALTIES)[0] }) {
               fontSize: 10,
               fontWeight: 700,
               letterSpacing: "0.05em",
-              padding: "5px 11px",
+              padding: "6px 16px",
               borderRadius: 999,
               color: "#fff",
               background: "linear-gradient(135deg, #a684ff 0%, #51a2ff 100%)",
@@ -204,7 +218,7 @@ function SpecCard({ spec }: { spec: (typeof SPECIALTIES)[0] }) {
             background: h
               ? "linear-gradient(135deg, #a684ff, #51a2ff)"
               : "rgba(255,255,255,0.06)",
-            color: h ? "#fff" : "rgba(255,255,255,0.3)",
+            color: h ? "#fff" : "rgba(255,255,255,0.6)",
             transition: "all 200ms",
             fontSize: 16,
           }}
@@ -224,19 +238,11 @@ export default function SpecialtiesSection({
   const swiperRef = useRef<SwiperType | null>(null);
 
   function handlePrev() {
-    const s = swiperRef.current;
-    if (!s) return;
-    s.autoplay.stop();
-    s.slidePrev(600);
-    s.autoplay.start();
+    swiperRef.current?.slidePrev(600);
   }
 
   function handleNext() {
-    const s = swiperRef.current;
-    if (!s) return;
-    s.autoplay.stop();
-    s.slideNext(600);
-    s.autoplay.start();
+    swiperRef.current?.slideNext(600);
   }
 
   return (
@@ -267,7 +273,7 @@ export default function SpecialtiesSection({
         </Reveal>
       </div>
 
-      <div className="">
+      <div className="overflow-hidden">
         <Swiper
           onSwiper={(s) => {
             swiperRef.current = s;
@@ -284,12 +290,13 @@ export default function SpecialtiesSection({
           spaceBetween={SPACE_BETWEEN_PX}
           allowTouchMove
           grabCursor
-          className="specialties-swiper py-2 sm:!px-6 lg:!px-10 [&_.swiper-wrapper]:!items-stretch [&_.swiper-slide]:!h-auto"
+          className="specialties-swiper !overflow-visible py-2 [&_.swiper-wrapper]:!items-stretch [&_.swiper-slide]:!h-auto"
         >
           {SPECIALTIES.map((s) => (
             <SwiperSlide
               key={s.code}
-              className="!w-[260px] sm:!w-[280px] lg:!w-[300px]"
+              className="!w-[260px] sm:!w-[300px] lg:!w-[340px] xl:!w-[380px] 2xl:!w-[420px]"
+              style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
             >
               <SpecCard spec={s} />
             </SwiperSlide>

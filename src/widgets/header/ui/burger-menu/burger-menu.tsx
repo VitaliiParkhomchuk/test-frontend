@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { AnimatePresence, motion } from "framer-motion";
@@ -45,15 +45,32 @@ export default function BurgerMenu({
 
   const [isOpen, setIsOpen] = useState(false);
   const [openIndex, setOpenIndex] = useState(-1);
+  const navRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (isOpen) {
-      globalLenis?.stop();
-    } else {
-      globalLenis?.start();
-    }
+    if (!isOpen) return;
+
+    globalLenis?.stop();
+    document.body.style.overflow = "hidden";
+
+    // Prevent Lenis from seeing wheel events inside the nav.
+    // Lenis listens on window in bubble phase, so stopPropagation
+    // here keeps native overflow-scroll working in the menu.
+    const nav = navRef.current;
+    const stopProp = (e: WheelEvent) => e.stopPropagation();
+    nav?.addEventListener("wheel", stopProp, { passive: true });
+
+    // Block wheel scroll on everything outside the menu
+    const blockOuter = (e: WheelEvent) => {
+      if (!nav?.contains(e.target as Node)) e.preventDefault();
+    };
+    window.addEventListener("wheel", blockOuter, { passive: false });
+
     return () => {
       globalLenis?.start();
+      document.body.style.overflow = "";
+      nav?.removeEventListener("wheel", stopProp);
+      window.removeEventListener("wheel", blockOuter);
     };
   }, [isOpen]);
 
@@ -133,7 +150,11 @@ export default function BurgerMenu({
             </div>
 
             {/* Nav list */}
-            <nav className="flex-1 overflow-y-auto px-6 py-2">
+            <nav
+              ref={navRef}
+              className="flex-1 overflow-y-auto overscroll-contain px-6 py-2"
+              style={{ WebkitOverflowScrolling: "touch", touchAction: "pan-y" }}
+            >
               <ul className="flex flex-col">
                 {extendedBurgerMenuData.map((item, index) => (
                   <motion.div

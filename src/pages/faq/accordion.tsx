@@ -26,19 +26,20 @@ export default function Accordion({
   return (
     <div
       onClick={onClick}
-      className={clsx(
-        "grad-border group cursor-pointer overflow-hidden rounded-[18px] backdrop-blur-xl transition-all duration-300 active:scale-[0.99]",
-        isAccordionOpen
-          ? "bg-gradient-to-br from-violet-500/[0.08] to-blue-500/[0.05]"
-          : "bg-white/[0.03] hover:bg-white/[0.05]"
-      )}
+      className="grad-border group relative cursor-pointer overflow-hidden rounded-[18px] bg-white/[0.03] backdrop-blur-xl transition-all duration-300 active:scale-[0.99] tap-highlight-transparent hover:bg-white/[0.05]"
     >
+      <div
+        className={clsx(
+          "pointer-events-none absolute inset-0 bg-gradient-to-br from-violet-500/[0.08] to-blue-500/[0.05] transition-opacity duration-300",
+          isAccordionOpen ? "opacity-100" : "opacity-0"
+        )}
+      />
       <div className="flex items-start gap-3 px-5 py-5 sm:gap-5 sm:px-7 sm:py-6">
         {typeof index === "number" && (
           <div
             className={clsx(
-              "font-display flex-shrink-0 font-extrabold transition-colors",
-              isAccordionOpen ? "text-grad" : "text-white/30"
+              "font-display text-grad flex-shrink-0 font-extrabold transition-opacity duration-300",
+              isAccordionOpen ? "opacity-100" : "opacity-30"
             )}
             style={{ fontSize: "clamp(1rem, 1.4vw, 1.4rem)" }}
           >

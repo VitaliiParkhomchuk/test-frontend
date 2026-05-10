@@ -1,9 +1,9 @@
-import { PageTransition, QueryHandler } from "@/widgets";
+import { PageTransition } from "@/widgets";
 import { useState } from "react";
+import { Stagger, StaggerItem } from "@/shared/ui";
 import { motion } from "framer-motion";
 import Accordion from "./accordion";
 import { publicRqClient } from "@/shared/api/instance";
-import { Stagger, StaggerItem } from "@/shared/ui";
 
 const FALLBACK_FAQ = [
   {
@@ -58,7 +58,7 @@ const FALLBACK_FAQ = [
 
 function HeroSection() {
   return (
-    <section className="relative overflow-hidden bg-[#08090f] pt-24 pb-12 sm:pt-32 sm:pb-16 lg:pt-40 lg:pb-20">
+    <section className="relative overflow-hidden bg-[#08090f] pt-24 pb-24 sm:pt-32 sm:pb-32 lg:pt-40 lg:pb-40">
       <motion.div
         aria-hidden
         className="pointer-events-none absolute -left-[10%] -top-[20%] h-[600px] w-[600px] rounded-full"
@@ -82,7 +82,9 @@ function HeroSection() {
         transition={{ duration: 16, ease: "easeInOut", repeat: Infinity }}
       />
 
-      <Stagger className="container-v2 relative z-[1] flex flex-col items-center text-center" stagger={0.1} inView={false}>
+      <div aria-hidden className="pointer-events-none absolute bottom-0 left-0 right-0 z-[2] h-40 bg-gradient-to-b from-transparent to-[#08090f]" />
+
+      <Stagger className="container-v2 relative z-[1] flex flex-col items-center text-center" stagger={0.1} delay={0.35} inView={false}>
         <StaggerItem mode="scale">
           <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-violet-500/25 bg-violet-500/10 py-1.5 pl-2 pr-4 backdrop-blur-md">
             <span className="rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-2.5 py-0.5 text-[10px] font-bold tracking-[0.06em] text-white">
@@ -120,10 +122,7 @@ function HeroSection() {
 }
 
 export function FAQPage() {
-  const { data: rawData, isLoading, isError } = publicRqClient.useQuery(
-    "get",
-    "/core/faq/"
-  );
+  const { data: rawData } = publicRqClient.useQuery("get", "/core/faq/");
   const data = rawData?.length ? rawData : FALLBACK_FAQ;
 
   const [whichAccordionIsOpen, setWhichAccordionIsOpen] = useState(-1);
@@ -135,22 +134,17 @@ export function FAQPage() {
     <PageTransition className="!pt-0 pb-0" isPaddingOn={false}>
       <HeroSection />
       <div className="bg-[#08090f] py-12 sm:py-16 lg:py-24">
-        <section className="container-v2 max-w-[900px]">
-          <QueryHandler isLoading={isLoading} isError={isError}>
-            <Stagger className="flex flex-col gap-3" stagger={0.06} amount={0.1}>
-              {data.map((item, i) => (
-                <StaggerItem key={item.id} mode="up">
-                  <Accordion
-                    index={i}
-                    isAccordionOpen={i === whichAccordionIsOpen}
-                    onClick={() => accordionHandler(i)}
-                    title={item.question}
-                    description={item.answer}
-                  />
-                </StaggerItem>
-              ))}
-            </Stagger>
-          </QueryHandler>
+        <section className="container-v2 flex flex-col gap-3 max-w-[900px]">
+          {data.map((item, i) => (
+            <Accordion
+              key={item.id}
+              index={i}
+              isAccordionOpen={i === whichAccordionIsOpen}
+              onClick={() => accordionHandler(i)}
+              title={item.question}
+              description={item.answer}
+            />
+          ))}
         </section>
       </div>
     </PageTransition>

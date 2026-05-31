@@ -1,4 +1,3 @@
-import { DEPARTMENTS_DATA } from "./departments-data";
 import { ROUTES } from "./routes";
 
 export interface SearchEntry {
@@ -12,7 +11,7 @@ export interface SearchEntry {
 const PAGES: SearchEntry[] = [
   {
     title: "Головна",
-    description: "Головна сторінка ННКІТІ — новини, спеціальності, статистика, партнери.",
+    description: "Головна сторінка ННІКІТІ — новини, спеціальності, статистика, партнери.",
     link: ROUTES.HOME,
     category: "Сторінки",
     keywords: ["ннкіті", "nuwm", "нувгп", "університет", "інститут"],
@@ -26,7 +25,7 @@ const PAGES: SearchEntry[] = [
   },
   {
     title: "Стратегія розвитку",
-    description: "Стратегічні цілі та пріоритети розвитку ННКІТІ.",
+    description: "Стратегічні цілі та пріоритети розвитку ННІКІТІ.",
     link: ROUTES.STRATEGY,
     category: "Про нас",
     keywords: ["місія", "бачення", "цілі", "план"],
@@ -40,21 +39,21 @@ const PAGES: SearchEntry[] = [
   },
   {
     title: "Випускники",
-    description: "Спільнота випускників ННКІТІ — успішні кар'єри та досягнення.",
+    description: "Спільнота випускників ННІКІТІ — успішні кар'єри та досягнення.",
     link: ROUTES.ALUMNI,
     category: "Про нас",
     keywords: ["алумні", "alumni", "кар'єра"],
   },
   {
     title: "Новини та події",
-    description: "Останні новини, анонси подій та заходи ННКІТІ.",
+    description: "Останні новини, анонси подій та заходи ННІКІТІ.",
     link: ROUTES.EVENTS,
     category: "Новини",
     keywords: ["анонси", "заходи", "конференції", "активності"],
   },
   {
     title: "Галерея",
-    description: "Фотохроніка подій та заходів ННКІТІ.",
+    description: "Фотохроніка подій та заходів ННІКІТІ.",
     link: ROUTES.GALLERY,
     category: "Медіа",
     keywords: ["фото", "фотографії", "події", "альбоми"],
@@ -82,7 +81,7 @@ const PAGES: SearchEntry[] = [
   },
   {
     title: "Аспірантура",
-    description: "Аспірантура та PhD-програми ННКІТІ.",
+    description: "Аспірантура та PhD-програми ННІКІТІ.",
     link: ROUTES.POSTGRADUATE,
     category: "Вступникам",
     keywords: ["PhD", "докторантура", "науковий ступінь", "дисертація"],
@@ -96,14 +95,14 @@ const PAGES: SearchEntry[] = [
   },
   {
     title: "Дослідження",
-    description: "Науково-дослідні проєкти та лабораторії ННКІТІ.",
+    description: "Науково-дослідні проєкти та лабораторії ННІКІТІ.",
     link: ROUTES.SCIENCE_RESEARCH,
     category: "Наука",
     keywords: ["проєкти", "лабораторії", "гранти", "дослідження"],
   },
   {
     title: "Конференції",
-    description: "Наукові конференції та семінари за участю ННКІТІ.",
+    description: "Наукові конференції та семінари за участю ННІКІТІ.",
     link: ROUTES.SCIENCE_CONFERENCES,
     category: "Наука",
     keywords: ["семінари", "симпозіуми", "міжнародні"],
@@ -124,14 +123,14 @@ const PAGES: SearchEntry[] = [
   },
   {
     title: "Бізнес-партнери",
-    description: "IT-компанії та корпоративні партнери ННКІТІ.",
+    description: "IT-компанії та корпоративні партнери ННІКІТІ.",
     link: ROUTES.PARTNERS_BUSINESS,
     category: "Партнери",
     keywords: ["SoftServe", "EPAM", "GlobalLogic", "Intellias", "стажування", "практика"],
   },
   {
     title: "Контакти",
-    description: "Адреса, телефони та електронна пошта ННКІТІ.",
+    description: "Адреса, телефони та електронна пошта ННІКІТІ.",
     link: ROUTES.CONTACTS,
     category: "Контакти",
     keywords: ["адреса", "телефон", "email", "пошта", "деканат", "приймальна комісія"],
@@ -197,15 +196,7 @@ const SPECIALTIES: SearchEntry[] = [
   },
 ];
 
-const DEPARTMENTS: SearchEntry[] = DEPARTMENTS_DATA.map((dept) => ({
-  title: `Кафедра ${dept.name}`,
-  description: dept.description,
-  link: `/department/${dept.id}`,
-  category: "Кафедри",
-  keywords: [dept.name.toLowerCase()],
-}));
-
-export const SEARCH_INDEX: SearchEntry[] = [...PAGES, ...SPECIALTIES, ...DEPARTMENTS];
+export const SEARCH_INDEX: SearchEntry[] = [...PAGES, ...SPECIALTIES];
 
 export function searchEntries(query: string): SearchEntry[] {
   const q = query.toLowerCase().trim();

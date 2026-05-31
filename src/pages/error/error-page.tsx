@@ -1,15 +1,10 @@
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { useLoadNamespace } from "@/shared/hooks";
 import { Reveal } from "@/shared/ui";
-import { loadTranslations } from "./locales";
 import { PageTransition } from "@/widgets";
+import { ROUTES } from "@/shared/model/routes";
 
-export function NotFoundPage() {
-  const { t } = useTranslation("notFound");
-  useLoadNamespace("notFound", loadTranslations);
-
+export function ErrorPage() {
   return (
     <PageTransition className="!pt-0 pb-0" isPaddingOn={false}>
       <section className="relative flex min-h-screen w-full items-center justify-center overflow-hidden bg-base px-5 py-24 text-center">
@@ -17,8 +12,7 @@ export function NotFoundPage() {
           aria-hidden
           className="pointer-events-none absolute -left-[10%] -top-[10%] h-[600px] w-[600px] rounded-full"
           style={{
-            background:
-              "radial-gradient(circle, rgba(166,132,255,0.18) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(166,132,255,0.18) 0%, transparent 70%)",
             filter: "blur(80px)",
           }}
           animate={{ x: [0, 30, 0], y: [0, 20, 0], scale: [1, 1.1, 1] }}
@@ -28,8 +22,7 @@ export function NotFoundPage() {
           aria-hidden
           className="pointer-events-none absolute -bottom-[15%] -right-[10%] h-[500px] w-[500px] rounded-full"
           style={{
-            background:
-              "radial-gradient(circle, rgba(81,162,255,0.16) 0%, transparent 70%)",
+            background: "radial-gradient(circle, rgba(81,162,255,0.16) 0%, transparent 70%)",
             filter: "blur(80px)",
           }}
           animate={{ x: [0, -25, 0], y: [0, -20, 0], scale: [1, 1.08, 1] }}
@@ -42,7 +35,7 @@ export function NotFoundPage() {
               <span className="rounded-full bg-gradient-to-r from-violet-500 to-blue-500 px-2.5 py-0.5 text-[10px] font-bold tracking-[0.06em] text-primary">
                 ERROR
               </span>
-              <span className="text-[12px] text-primary/70">Сторінку не знайдено</span>
+              <span className="text-[12px] text-primary/70">Помилка сервера</span>
             </div>
           </Reveal>
 
@@ -50,13 +43,13 @@ export function NotFoundPage() {
             <h1
               className="font-display font-black"
               style={{
-                fontSize: "clamp(5rem, 16vw, 14rem)",
+                fontSize: "clamp(4rem, 14vw, 12rem)",
                 letterSpacing: "-0.06em",
                 lineHeight: 0.9,
                 textShadow: "0 4px 40px rgba(0,0,0,0.5)",
               }}
             >
-              <span className="text-grad-animated">404</span>
+              <span className="text-grad-animated">Ой!</span>
             </h1>
           </Reveal>
 
@@ -65,18 +58,24 @@ export function NotFoundPage() {
               className="mx-auto mt-6 text-[15px] text-muted sm:text-[17px]"
               style={{ lineHeight: 1.7, maxWidth: 480 }}
             >
-              {t("notExist")}.
+              Щось пішло не так на нашому боці. Спробуйте оновити сторінку або поверніться на головну.
             </p>
           </Reveal>
 
           <Reveal mode="up" delay={0.8} inView={false}>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Link
-                to="/"
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
                 className="sheen inline-flex items-center gap-2 rounded-[14px] bg-gradient-to-r from-violet-500 to-blue-500 px-7 py-3.5 text-[15px] font-semibold text-primary shadow-[0_4px_16px_rgba(166,132,255,0.3)] transition-all duration-200 hover:scale-[1.02] hover:shadow-[0_8px_32px_rgba(166,132,255,0.55)] active:scale-95 sm:text-[17px]"
               >
-                {t("goHome")}
-                <span aria-hidden>→</span>
+                Оновити сторінку
+              </button>
+              <Link
+                to={ROUTES.HOME}
+                className="inline-flex items-center gap-2 rounded-[14px] border border-ui bg-surface-lg px-7 py-3.5 text-[15px] font-semibold text-primary backdrop-blur-md transition-all duration-200 hover:bg-surface-xl active:scale-95 sm:text-[17px]"
+              >
+                На головну
               </Link>
             </div>
           </Reveal>
@@ -86,4 +85,4 @@ export function NotFoundPage() {
   );
 }
 
-export const Component = NotFoundPage;
+export const Component = ErrorPage;

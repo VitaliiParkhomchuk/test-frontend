@@ -1,7 +1,7 @@
 import React from "react";
 import { useLocation, useOutlet } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
-import { Header, Footer, Preloader } from "@/widgets";
+import { Header, Footer, Preloader, GlobalBackground } from "@/widgets";
 import { useLenis } from "@/shared/hooks";
 
 export function App() {
@@ -11,6 +11,7 @@ export function App() {
 
   return (
     <div className="relative flex min-h-dvh flex-col">
+      <GlobalBackground />
       <Preloader />
       <Header />
       <AnimatePresence mode="wait">
